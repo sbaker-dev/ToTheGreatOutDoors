@@ -1,7 +1,7 @@
 """
 Purpose: Extract official links via BeautifulSoup from a set of saved html files from Wikipedia.
 Note: If you are going to use this file, you will also need to set the env variable nat_trust_links to the directory
-      of the downloaded data
+      of the downloaded data, and download the data via the link in the README.md
 """
 from bs4 import BeautifulSoup
 from miscSupports import directory_iterator, load_yaml, write_json
