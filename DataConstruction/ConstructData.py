@@ -15,6 +15,7 @@ from abc import abstractmethod
 @dataclass()
 class Location:
     """Data holder for locational data"""
+
     name: str
     gid: str
     purpose: str
@@ -88,6 +89,7 @@ class EnglishHeritage(DatabaseLoader):
 
 class OSGreenSpace(DatabaseLoader):
     """Loader for the OS green space data"""
+
     def __init__(self, shapefile_path, os_exceptions: List):
         super().__init__(shapefile_path)
 
@@ -100,7 +102,9 @@ class OSGreenSpace(DatabaseLoader):
 
 class ConstructData:
     def __init__(self, window_size: int):
-        self.env = load_yaml(validate_path(Path(Path(__file__).parent.parent, 'env.yaml')))['location_data']
+        env = load_yaml(validate_path(Path(Path(__file__).parent.parent, 'env.yaml')))
+        self.os_data = env['os_data']
+        self.data = env['external_data']
 
         # Canvas size for the SVG elements
         self.window_size = window_size
@@ -108,17 +112,20 @@ class ConstructData:
 
     def main(self, os_exceptions: List[str]):
 
+        # TODO: Probably want this in init / have an init method
         print("Loading OS Green Space data...")
-        os_data = OSGreenSpace(self.env['osgreen']['link'] + "/GB_GreenspaceSite.shp", os_exceptions).load_data()
+        os_data = OSGreenSpace(self.os_data['os_green'] + "/GB_GreenspaceSite.shp", os_exceptions).load_data()
         print("...Loaded OS Green Space data")
 
-        other_external_data = [self.load_factory(datasource) for datasource in self.env]
-        other_external_data = [data for data in other_external_data if data]
+        other_external_data = [self.load_factory(datasource) for datasource in self.data]
         print("...Loaded external data")
 
         # TODO: We need to link the locations to a county
         # TODO: Basically we need to change overlap to return the overlap, so that way we want a null return for the
         #   os check overlap, but when we have a county, we want the actual value.
+
+        # Note: This could be spend up by isolating OS green space areas within the same grid reference as the current
+        # external location. Would need to have a point coordinate to grid map reference category for that to work.
         for data in other_external_data:
             for name, location in data.items():
                 if not location.overlap(list(os_data.values())):
@@ -133,10 +140,9 @@ class ConstructData:
         # EnglishHeritage(env['english_heritage_monuments']).load_data("Monuments")
 
     def load_factory(self, datasource):
+        """Instantiation of a given loader based on the first element of the data source key, split on underscore"""
         elements = datasource.split("_")
-        if len(elements) == 1:
-            return
-        return self.factory[elements[0]](self.env[datasource]['link']).load_data(self.env[datasource]['category'])
+        return self.factory[elements[0]](self.data[datasource]['link']).load_data(self.data[datasource]['category'])
 
 
 if __name__ == '__main__':
