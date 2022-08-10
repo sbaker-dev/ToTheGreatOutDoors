@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import sys
 
-from miscSupports import load_yaml, validate_path, load_json
+from miscSupports import load_yaml, validate_path, load_json, terminal_time
 from dataclasses import dataclass
 from shapely.geometry import Polygon, MultiPolygon
 from typing import Union, Optional, Dict, List
@@ -113,24 +113,36 @@ class OSBoundary(DatabaseLoader):
 
 
 class ConstructData:
-    def __init__(self, window_size: int):
+    def __init__(self, window_size: int, os_exceptions: List[str]):
         env = load_yaml(validate_path(Path(Path(__file__).parent.parent, 'env.yaml')))
         self.os_data = env['os_data']
         self.data = env['external_data']
+
+        self.database, self.os_green = self._init_os_load(os_exceptions)
 
         # Canvas size for the SVG elements
         self.window_size = window_size
         self.factory = {'national': NationalTrust, "english": EnglishHeritage}
 
-    def main(self, os_exceptions: List[str]):
+    def _init_os_load(self, os_exceptions: List[str]):
+        """
+        Load the boundary data which we will use to relational map polygons to a region, and load the os green space
+        data to check against external data. We only keep external places that do not exist in this master os green
+        space dataset.
+        """
+        print("Loading Boundary Data...")
+        boundary_path = self.os_data['os_boundary'] + "/GB/district_borough_unitary_region.shp"
+        boundary = OSBoundary(boundary_path).load_data("Boundary")
 
-        # TODO: Probably want this in init / have an init method
         print("Loading OS Green Space data...")
         os_data = OSGreenSpace(self.os_data['os_green'] + "/GB_GreenspaceSite.shp", os_exceptions).load_data()
-        print("...Loaded OS Green Space data")
 
+        return boundary, os_data
+
+    def main(self):
+
+        print("Loading external data...")
         other_external_data = [self.load_factory(datasource) for datasource in self.data]
-        print("...Loaded external data")
 
         # TODO: We need to link the locations to a county
         # TODO: Basically we need to change overlap to return the overlap, so that way we want a null return for the
@@ -140,7 +152,7 @@ class ConstructData:
         # external location. Would need to have a point coordinate to grid map reference category for that to work.
         for data in other_external_data:
             for name, location in data.items():
-                if not location.overlap(list(os_data.values())):
+                if not location.overlap(list(self.os_green.values())):
                     print(location.as_svg(self.window_size))
                     print("TRUE")
                     print(name)
@@ -159,5 +171,4 @@ class ConstructData:
 
 if __name__ == '__main__':
     exceptions = ['Religious Grounds', 'Allotments Or Community Growing Spaces', 'Cemetery']
-    ConstructData(2000).main(exceptions)
-
+    ConstructData(2000, exceptions).main()
