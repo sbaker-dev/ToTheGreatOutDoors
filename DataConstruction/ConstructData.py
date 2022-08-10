@@ -1,15 +1,13 @@
 from __future__ import annotations
 
-import sys
-
-from miscSupports import load_yaml, validate_path, load_json, terminal_time
-from dataclasses import dataclass
-from shapely.geometry import Polygon, MultiPolygon
-from typing import Union, Optional, Dict, List
-from pathlib import Path
-from shapeObject import ShapeObject
+from miscSupports import load_yaml, validate_path, load_json, write_json
 from shapeObject.write_shapefile import set_polygon_geometry
+from typing import Union, Optional, Dict, List, Tuple
+from shapely.geometry import Polygon, MultiPolygon
+from shapeObject import ShapeObject
+from dataclasses import dataclass
 from abc import abstractmethod
+from pathlib import Path
 
 
 @dataclass()
@@ -22,17 +20,34 @@ class Location:
     polygon: Union[Polygon, MultiPolygon]
     external_link: Optional[str] = None
 
-    def overlap(self, os_places: List[Location]):
-        for location in os_places:
+    def overlap(self, overlap_places: List[Location]) -> Optional[Location]:
+        """
+        Validate if this locations polygon overlaps any place in the external_places. Return the external overlap
+        Location if there is an overlap, None otherwise.
+        """
+        for location in overlap_places:
             if location.polygon.intersection(self.polygon).area > 0:
-                return True
-        return False
+                return location
+        return None
 
-    def as_svg(self, window_dimension: int):
+    def database_values(self, window_dimension: int, simplification: float):
+        """Convert to a dict for the json database"""
+        return self.place_name, self.purpose, self.external_link, self._as_svg(window_dimension, simplification)
+
+    def _as_svg(self, window_dimension: int, simplification: float):
+        """Convert the svg points to be relative to the window dimension of the application"""
+        polygon_points = self.polygon.simplify(tolerance=simplification)
         geometry_points = [[f"{x / window_dimension},{(y / window_dimension)} " for x, y in sub_geometry]
-                           for i, sub_geometry in enumerate(set_polygon_geometry(self.polygon))]
-
+                           for i, sub_geometry in enumerate(set_polygon_geometry(polygon_points))]
         return "".join([f"M{p[0]}" + f"L{p[1]}" + f"{''.join(p[2:])}z" for p in geometry_points])
+
+    @property
+    def place_name(self):
+        """Many OS locations don't have a name, use the GID in this instance"""
+        if len(self.name) <= 1:
+            return self.gid
+        else:
+            return self.name
 
 
 class DatabaseLoader:
@@ -96,7 +111,7 @@ class OSGreenSpace(DatabaseLoader):
         self.exceptions = os_exceptions
 
     def load_data(self, category: Optional[str] = None) -> Dict[str, Location]:
-        return {name: Location(name, gid, purpose, poly) for poly, (gid, purpose, name, _, _, _) in
+        return {gid: Location(name, gid, purpose, poly) for poly, (gid, purpose, name, _, _, _) in
                 zip(self.shp.polygons, self.shp.records) if purpose not in self.exceptions}
 
 
@@ -106,25 +121,39 @@ class OSBoundary(DatabaseLoader):
     def __init__(self, shapefile_path):
         super().__init__(shapefile_path)
 
-    def load_data(self, category: Optional[str] = None) -> Dict[str, Location]:
-        return {name: {"Geography": Location(name, gid, category, poly), 'Locations': []}
+    def load_data(self, category: Optional[str] = None):
+        return {name: Location(name, gid, category, poly)
                 for poly, (name, _, _, _, _, _, _, gid, _, _, _, _, _, _, _) in zip(
                 self.shp.polygons, self.shp.records)}
 
 
 class ConstructData:
     def __init__(self, window_size: int, os_exceptions: List[str]):
+
+        # Initialise the paths from the env file
         env = load_yaml(validate_path(Path(Path(__file__).parent.parent, 'env.yaml')))
         self.os_data = env['os_data']
         self.data = env['external_data']
-
-        self.database, self.os_green = self._init_os_load(os_exceptions)
 
         # Canvas size for the SVG elements
         self.window_size = window_size
         self.factory = {'national': NationalTrust, "english": EnglishHeritage}
 
-    def _init_os_load(self, os_exceptions: List[str]):
+        # Load the OS data and construct the database
+        self.db, self.boundary, self.location_data = self._init_load_data(os_exceptions)
+
+    def _init_load_data(self, os_exceptions: List[str]):
+        """Load OS and other external databases"""
+
+        # Load OS related data
+        db, boundary, os_green = self._init_os_load(os_exceptions)
+
+        # Load the rest of the external data, converge with os_green
+        print("Loading external data...")
+        location_data = [self._init_load_factory(datasource) for datasource in self.data] + [os_green]
+        return db, boundary, location_data
+
+    def _init_os_load(self, os_exceptions: List[str]) -> Tuple[dict, Dict[str, Location], Dict[str, Location]]:
         """
         Load the boundary data which we will use to relational map polygons to a region, and load the os green space
         data to check against external data. We only keep external places that do not exist in this master os green
@@ -134,41 +163,37 @@ class ConstructData:
         boundary_path = self.os_data['os_boundary'] + "/GB/district_borough_unitary_region.shp"
         boundary = OSBoundary(boundary_path).load_data("Boundary")
 
+        # Construct the database from the boundary data
+        database = {place_name: [] for place_name, location in boundary.items()}
+
         print("Loading OS Green Space data...")
         os_data = OSGreenSpace(self.os_data['os_green'] + "/GB_GreenspaceSite.shp", os_exceptions).load_data()
+        return database, boundary, os_data
 
-        return boundary, os_data
-
-    def main(self):
-
-        print("Loading external data...")
-        other_external_data = [self.load_factory(datasource) for datasource in self.data]
-
-        # TODO: We need to link the locations to a county
-        # TODO: Basically we need to change overlap to return the overlap, so that way we want a null return for the
-        #   os check overlap, but when we have a county, we want the actual value.
-
-        # Note: This could be spend up by isolating OS green space areas within the same grid reference as the current
-        # external location. Would need to have a point coordinate to grid map reference category for that to work.
-        for data in other_external_data:
-            for name, location in data.items():
-                if not location.overlap(list(self.os_green.values())):
-                    print(location.as_svg(self.window_size))
-                    print("TRUE")
-                    print(name)
-                    sys.exit()
-
-        # NationalTrust(self.env['national_trust_open']).load_data("National Trust")
-        # NationalTrust(env['national_trust_limited']).load_data("National Trust")
-        # EnglishHeritage(env['english_heritage_parks']).load_data("Public Park Or Garden")
-        # EnglishHeritage(env['english_heritage_monuments']).load_data("Monuments")
-
-    def load_factory(self, datasource):
+    def _init_load_factory(self, datasource):
         """Instantiation of a given loader based on the first element of the data source key, split on underscore"""
         elements = datasource.split("_")
         return self.factory[elements[0]](self.data[datasource]['link']).load_data(self.data[datasource]['category'])
 
+    def relation_map(self):
+        """
+        Map each location within our datasets to a JSON database
 
-if __name__ == '__main__':
-    exceptions = ['Religious Grounds', 'Allotments Or Community Growing Spaces', 'Cemetery']
-    ConstructData(2000, exceptions).main()
+        # Warning
+        Not particularly optimised, will take a while.
+        """
+        # Note: This could be probably be spend up by using grid references...
+        print("Assigning data to boundaries")
+        [self._assign_location(i, place) for data in self.location_data for i, (name, place) in enumerate(data.items())]
+        write_json(self.db, str(Path(Path(__file__).parent.parent, 'Data').absolute()), 'RelationMap')
+
+    def _assign_location(self, index: int, location: Location):
+        """Assign a locations name to the database, if we find a location is within a boundary location"""
+        if index % 1000 == 0:
+            print(index)
+
+        # Check that the location is within a given boundary zone, then assign if it is to the dict database
+        boundary_name = location.overlap(list(self.boundary.values()))
+        if not boundary_name:
+            return
+        self.db[boundary_name.name].append(location.place_name)
