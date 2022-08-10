@@ -100,6 +100,18 @@ class OSGreenSpace(DatabaseLoader):
                 zip(self.shp.polygons, self.shp.records) if purpose not in self.exceptions}
 
 
+class OSBoundary(DatabaseLoader):
+    """Loader for boundary data"""
+
+    def __init__(self, shapefile_path):
+        super().__init__(shapefile_path)
+
+    def load_data(self, category: Optional[str] = None) -> Dict[str, Location]:
+        return {name: {"Geography": Location(name, gid, category, poly), 'Locations': []}
+                for poly, (name, _, _, _, _, _, _, gid, _, _, _, _, _, _, _) in zip(
+                self.shp.polygons, self.shp.records)}
+
+
 class ConstructData:
     def __init__(self, window_size: int):
         env = load_yaml(validate_path(Path(Path(__file__).parent.parent, 'env.yaml')))
