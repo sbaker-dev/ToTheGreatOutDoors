@@ -1,8 +1,9 @@
-from DataConstruction.ConstructData import ConstructData
+from Django.ToTheGreatOutDoors.core.management.commands.ConstructData import ConstructData
 
+from pathlib import Path
 
 if __name__ == '__main__':
     # Create the relation map, will take a fairly long time. Recommend you just use the RelationMap.Txt.
     exceptions = ['Religious Grounds', 'Allotments Or Community Growing Spaces', 'Cemetery']
-    constructor = ConstructData(2000, exceptions)
+    constructor = ConstructData(Path(Path(__file__).parent.parent, 'env.yaml'), 2000, exceptions)
 

@@ -32,9 +32,9 @@ class Location:
 
     def database_values(self, window_dimension: int, simplification: float):
         """Convert to a dict for the json database"""
-        return self.place_name, self.purpose, self.external_link, self._as_svg(window_dimension, simplification)
+        return self.purpose, self.external_link, self.as_svg(window_dimension, simplification)
 
-    def _as_svg(self, window_dimension: int, simplification: float):
+    def as_svg(self, window_dimension: int, simplification: float):
         """Convert the svg points to be relative to the window dimension of the application"""
         polygon_points = self.polygon.simplify(tolerance=simplification)
         geometry_points = [[f"{x / window_dimension},{(y / window_dimension)} " for x, y in sub_geometry]
@@ -53,8 +53,9 @@ class Location:
 class DatabaseLoader:
     """Root class that all external shapefile will load via its abstract load_data"""
 
-    def __init__(self, shapefile_path):
+    def __init__(self, env: dict, shapefile_path: Union[str, Path]):
         self.shp = ShapeObject(validate_path(shapefile_path), encoding_errors='replace')
+        self.env = env
 
     @abstractmethod
     def load_data(self, category: Optional[str] = None) -> Dict[str, Location]:
@@ -64,10 +65,10 @@ class DatabaseLoader:
 class NationalTrust(DatabaseLoader):
     """Read in data from a National Trust shapefile, and attempt to link in externally constructed links"""
 
-    def __init__(self, shapefile_path):
-        super().__init__(shapefile_path)
+    def __init__(self, env, shapefile_path):
+        super().__init__(env, shapefile_path)
 
-        self._link_data = load_json(Path(Path(__file__).parent.parent, "Data", 'NationalTrustLinks.txt'))
+        self._link_data = load_json(Path(self.env['output_data_root'], 'NationalTrustLinks.txt'))
 
     def load_data(self, category: Optional[str] = None) -> Dict[str, Location]:
         # Extract the data from the shapefile
@@ -88,8 +89,8 @@ class NationalTrust(DatabaseLoader):
 class EnglishHeritage(DatabaseLoader):
     """Read in data in from a English Heritage formatted shapefiles"""
 
-    def __init__(self, shapefile_path, gid_i=0, name_i=1, link_i=-1):
-        super().__init__(shapefile_path)
+    def __init__(self, env, shapefile_path, gid_i=0, name_i=1, link_i=-1):
+        super().__init__(env, shapefile_path)
 
         # The number of columns is not consistent in the english heritage files. In theory the keyword defaults should
         # always work, but exposed for clarity and update potential
@@ -105,8 +106,8 @@ class EnglishHeritage(DatabaseLoader):
 class OSGreenSpace(DatabaseLoader):
     """Loader for the OS green space data"""
 
-    def __init__(self, shapefile_path, os_exceptions: List):
-        super().__init__(shapefile_path)
+    def __init__(self, env, shapefile_path, os_exceptions: List):
+        super().__init__(env, shapefile_path)
 
         self.exceptions = os_exceptions
 
@@ -118,8 +119,8 @@ class OSGreenSpace(DatabaseLoader):
 class OSBoundary(DatabaseLoader):
     """Loader for boundary data"""
 
-    def __init__(self, shapefile_path):
-        super().__init__(shapefile_path)
+    def __init__(self, env, shapefile_path):
+        super().__init__(env, shapefile_path)
 
     def load_data(self, category: Optional[str] = None):
         return {name: Location(name, gid, category, poly)
@@ -128,12 +129,12 @@ class OSBoundary(DatabaseLoader):
 
 
 class ConstructData:
-    def __init__(self, window_size: int, os_exceptions: List[str]):
+    def __init__(self, env_path: Path, window_size: int, os_exceptions: List[str]):
 
         # Initialise the paths from the env file
-        env = load_yaml(validate_path(Path(Path(__file__).parent.parent, 'env.yaml')))
-        self.os_data = env['os_data']
-        self.data = env['external_data']
+        self.env = load_yaml(validate_path(env_path))
+        self.os_data = self.env['os_data']
+        self.data = self.env['external_data']
 
         # Canvas size for the SVG elements
         self.window_size = window_size
@@ -161,19 +162,19 @@ class ConstructData:
         """
         print("Loading Boundary Data...")
         boundary_path = self.os_data['os_boundary'] + "/GB/district_borough_unitary_region.shp"
-        boundary = OSBoundary(boundary_path).load_data("Boundary")
+        boundary = OSBoundary(self.env, boundary_path).load_data("Boundary")
 
         # Construct the database from the boundary data
         database = {place_name: [] for place_name, location in boundary.items()}
 
         print("Loading OS Green Space data...")
-        os_data = OSGreenSpace(self.os_data['os_green'] + "/GB_GreenspaceSite.shp", os_exceptions).load_data()
+        os_data = OSGreenSpace(self.env, self.os_data['os_green'] + "/GB_GreenspaceSite.shp", os_exceptions).load_data()
         return database, boundary, os_data
 
     def _init_load_factory(self, datasource):
         """Instantiation of a given loader based on the first element of the data source key, split on underscore"""
-        elements = datasource.split("_")
-        return self.factory[elements[0]](self.data[datasource]['link']).load_data(self.data[datasource]['category'])
+        factory_class = self.factory[datasource.split("_")[0]]
+        return factory_class(self.env, self.data[datasource]['link']).load_data(self.data[datasource]['category'])
 
     def relation_map(self):
         """
@@ -185,7 +186,7 @@ class ConstructData:
         # Note: This could be probably be spend up by using grid references...
         print("Assigning data to boundaries")
         [self._assign_location(i, place) for data in self.location_data for i, (name, place) in enumerate(data.items())]
-        write_json(self.db, str(Path(Path(__file__).parent.parent, 'Data').absolute()), 'RelationMap')
+        write_json(self.db, self.env['output_data_root'], 'RelationMap')
 
     def _assign_location(self, index: int, location: Location):
         """Assign a locations name to the database, if we find a location is within a boundary location"""
