@@ -1,0 +1,72 @@
+
+{% extends 'main.html' %}
+
+{% block content %}
+
+
+<div style="display: grid; grid-template-columns: 30% 70%">
+
+    <div style="padding: 20px">
+
+        <label class="textStandard" for="SelectPlace">Where are you setting out to explore today?</label>
+        <select onchange="SelectViaSelection()" id="SelectPlace">
+
+            {% for location in locations_list %}
+                <option value="BD-{{location.place}}">{{location.place}}</option>
+            {% endfor %}
+
+        </select>
+    </div>
+
+
+
+
+    <div id="svgContainer" style="padding: 20px">
+
+        <!--Zoom / X-pos / Y-pos / Recenter position -->
+          <div style="display: grid; grid-template-columns: 25% 25% 25% 25%">
+            <div>
+              <p class="textStandard">Zoom: <span class="textStandard" id="zoomValue">1</span></p>
+            </div>
+
+            <div>
+              <p class="textStandard">X-Position: <span class="textStandard" id="xPos">1</span></p>
+
+            </div>
+
+            <div>
+              <p class="textStandard">Y-Position: <span class="textStandard" id="yPos">1</span></p>
+            </div>
+
+            <div>
+              <button class="btn btn-primary" onclick="recenter()">Recenter </button>
+            </div>
+          </div>
+
+
+        <svg id="svgImage" style="background-color: gray; transform: rotateX(180deg)" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <style>
+                path {
+                    stroke-width: 0.05px;
+                    stroke: black;
+                }
+            </style>
+
+            {% for location in locations_list %}
+                <path onclick="SelectViaMapLocation(id)" d="{{location.svg}}" id="BD-{{location.place}}" style="fill: lightblue"></path>
+            {% endfor %}
+
+        </svg>
+
+
+
+
+    </div>
+
+</div>
+
+{% load static %}
+<script src="{% static 'js/controls.js' %}"></script>
+
+
+{% endblock content %}
