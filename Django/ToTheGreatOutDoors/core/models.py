@@ -3,12 +3,8 @@ from django.db import models
 # Create your models here.
 
 
-class Place(models.Model):
-    name = models.TextField()
-
-
 class Boundary(models.Model):
-    place = models.ForeignKey(Place, on_delete=models.CASCADE)
+    place = models.TextField()
     svg = models.TextField()
 
 
@@ -17,7 +13,7 @@ class Location(models.Model):
     category = models.TextField()
     svg = models.TextField()
     link = models.TextField(null=True)
-    place = models.ForeignKey(Place, on_delete=models.CASCADE)
+    place = models.TextField()
 
     def __str__(self):
         return self.name
