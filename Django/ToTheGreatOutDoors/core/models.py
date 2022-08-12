@@ -8,7 +8,7 @@ class Boundary(models.Model):
     svg = models.TextField()
 
 
-class Location(models.Model):
+class TravelLocation(models.Model):
     name = models.TextField()
     category = models.TextField()
     svg = models.TextField()
