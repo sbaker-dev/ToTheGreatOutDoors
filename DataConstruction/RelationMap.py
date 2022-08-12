@@ -7,3 +7,6 @@ if __name__ == '__main__':
     exceptions = ['Religious Grounds', 'Allotments Or Community Growing Spaces', 'Cemetery']
     constructor = ConstructData(Path(Path(__file__).parent.parent, 'env.yaml'), 2000, exceptions)
 
+    # Uncomment to run
+    # constructor.relation_map()
+
