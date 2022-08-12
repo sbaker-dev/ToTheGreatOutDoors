@@ -8,15 +8,40 @@
 
     <div style="padding: 20px">
 
-        <label class="textStandard" for="SelectPlace">Where are you setting out to explore today?</label>
-        <select onchange="SelectViaSelection()" id="SelectPlace">
+        <!-- TODO: make these templates -->
+        <!-- Selection of location -->
+        <div>
+            <label class="textStandard" for="SelectPlace">Where are you setting out to explore today?</label>
+            <select class="form-control form-control-lg" onchange="SelectViaSelection()" id="SelectPlace">
 
             {% for location in locations_list %}
                 <option value="BD-{{location.place}}">{{location.place}}</option>
             {% endfor %}
 
         </select>
+
+        </div>
+        <br>
+        <!-- Selection of activity -->
+        <div>
+            <label class="textStandard" for="SelectActivity">What kind of place would you like to go?</label>
+            <select class="form-control form-group-lg" id="SelectActivity">
+
+                {% for category in categories_list %}
+                    <option value="CT-{{category}}">{{category}}</option>
+                {% endfor %}
+
+
+            </select>
+
+        </div>
+
+
+
+
     </div>
+
+
 
 
 
