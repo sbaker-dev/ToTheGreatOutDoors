@@ -125,11 +125,11 @@ function recenter(){
  */
 function SelectViaSelection(){
     // Set the last known value to be its default
-    document.getElementById(previousLocation).style.fill = "lightblue";
+    document.getElementById(previousLocation).style.fill = '#A298C4';
 
     // Get the newly selected value, assign it as selected, and update previousLocation
     const newValue = document.getElementById('SelectPlace').value;
-    document.getElementById(newValue).style.fill = "red"
+    document.getElementById(newValue).style.fill = "lightblue"
     previousLocation = newValue
 }
 
@@ -141,11 +141,11 @@ function SelectViaSelection(){
 function SelectViaMapLocation(place_id){
     // Set the old value to be blue
     const selectionBox = document.getElementById('SelectPlace');
-    document.getElementById(selectionBox.value).style.fill = "lightblue";
+    document.getElementById(selectionBox.value).style.fill = '#A298C4';
 
     // Set the new value to be red
     document.getElementById("SelectPlace").value = place_id;
-    document.getElementById(place_id).style.fill = "red";
+    document.getElementById(place_id).style.fill = "lightblue";
     previousLocation = place_id;
 
 
