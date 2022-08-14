@@ -14,11 +14,11 @@
     <div style="padding: 20px">
 
         <!-- Selection of location -->
-        {% include 'area_selection.html' %}
+        {% include 'components/area_selection.html' %}
         <br>
 
         <!-- Selection of activity -->
-        {% include 'activity_selection.html' %}
+        {% include 'components/activity_selection.html' %}
 
     </div>
 
@@ -30,7 +30,7 @@
     <div id="svgContainer" style="padding: 20px">
 
         <!--Zoom / X-pos / Y-pos / Recenter position -->
-        {% include 'map_controls.html' %}
+        {% include 'components/map_controls.html' %}
 
 
         <svg id="svgImage" style="background-color: gray; transform: rotateX(180deg)" fill-rule="evenodd" height="85vh" width="65vw" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
