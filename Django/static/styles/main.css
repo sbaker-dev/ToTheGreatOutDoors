@@ -1,4 +1,98 @@
 .textStandard{
-  font-size: 24px;
+  font-size: 28px;
   text-align: justify;
 }
+
+/*Scroll bar styling */
+::-webkit-scrollbar {
+    width: 15px;
+    background: #333;
+}
+
+
+::-webkit-scrollbar-track {
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color:#A298C4
+}
+
+
+
+/* Header styling */
+
+.topnav {
+  position: fixed;
+  width: 100%;
+  overflow: hidden;
+  background-color: #333;
+}
+
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+.topnav a.active {
+  background-color: #0E3F21;
+  color: white;
+}
+
+
+/*Css for home page */
+.jumbotron{
+      background-image: url('/static/coverImages/MountainsCover.png');
+      background-size: 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      color:white !important;
+      height:100vh;
+}
+
+.strongText{
+  font-weight: 600;
+  color: #2D2E44;
+}
+
+
+.selectionColour{
+    color: #A298C4
+}
+
+.imageLinks{
+    padding: 10px;
+    margin: 10px;
+    background-size: 100%;
+    background-repeat: no-repeat;
+    height: 600px;
+}
+
+.imageLinks:hover{
+    transform: scale(1.1);
+}
+
+.imageLinks div {
+    transition: transform 2s ease;
+}
+
+
+.homeContainer {
+    margin-left: 20%;
+    margin-right: 20%;
+    margin-bottom: 10vh;
+    align-content: center;
+    text-align: center;
+}
+
