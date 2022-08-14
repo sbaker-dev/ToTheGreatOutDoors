@@ -3,41 +3,22 @@
 
 {% block content %}
 
+{% load static %}
+
+    <br>
+    <br>
 
 <div style="display: grid; grid-template-columns: 30% 70%">
 
+    <!-- Information panel -->
     <div style="padding: 20px">
 
-        <!-- TODO: make these templates -->
         <!-- Selection of location -->
-        <div>
-            <label class="textStandard" for="SelectPlace">Where are you setting out to explore today?</label>
-            <select class="form-control form-control-lg" onchange="SelectViaSelection()" id="SelectPlace">
-
-            {% for location in locations_list %}
-                <option value="BD-{{location.place}}">{{location.place}}</option>
-            {% endfor %}
-
-        </select>
-
-        </div>
+        {% include 'area_selection.html' %}
         <br>
+
         <!-- Selection of activity -->
-        <div>
-            <label class="textStandard" for="SelectActivity">What kind of place would you like to go?</label>
-            <select class="form-control form-group-lg" id="SelectActivity">
-
-                {% for category in categories_list %}
-                    <option value="CT-{{category}}">{{category}}</option>
-                {% endfor %}
-
-
-            </select>
-
-        </div>
-
-
-
+        {% include 'activity_selection.html' %}
 
     </div>
 
@@ -49,37 +30,35 @@
     <div id="svgContainer" style="padding: 20px">
 
         <!--Zoom / X-pos / Y-pos / Recenter position -->
-          <div style="display: grid; grid-template-columns: 25% 25% 25% 25%">
-            <div>
-              <p class="textStandard">Zoom: <span class="textStandard" id="zoomValue">1</span></p>
-            </div>
-
-            <div>
-              <p class="textStandard">X-Position: <span class="textStandard" id="xPos">1</span></p>
-
-            </div>
-
-            <div>
-              <p class="textStandard">Y-Position: <span class="textStandard" id="yPos">1</span></p>
-            </div>
-
-            <div>
-              <button class="btn btn-primary" onclick="recenter()">Recenter </button>
-            </div>
-          </div>
+        {% include 'map_controls.html' %}
 
 
-        <svg id="svgImage" style="background-color: gray; transform: rotateX(180deg)" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <svg id="svgImage" style="background-color: gray; transform: rotateX(180deg)" fill-rule="evenodd" height="85vh" width="65vw" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <style>
                 path {
                     stroke-width: 0.05px;
                     stroke: black;
+
                 }
             </style>
+
+            <!-- Show the map ONLY if it is within a bound. THis does mean we need to (somehow, create a relation map
+            for the maps as well-->
+            <image x="200" y="600" width="50" height="50" xlink:href='/static/images/HP.png'></image>
+            <image x="200" y="550" width="50" height="50" xlink:href='/static/images/HU.png'></image>
+
+
+{#            <!-- Width and Height shouldn't change, but they are magic numbers as is... -->#}
+{#            <!-- map position is wrong -->#}
+{#            {% for map in raster_list %}#}
+{#                <image x="{{ map.x }}" y="{{ map.y }}" width="50" height="50" id="{{ map.place }}" xlink:href='/static/images/{{ map.place }}.png'></image>#}
+{##}
+{#            {% endfor %}#}
 
             {% for location in locations_list %}
                 <path onclick="SelectViaMapLocation(id)" d="{{location.svg}}" id="BD-{{location.place}}" style="fill: lightblue"></path>
             {% endfor %}
+
 
         </svg>
 
@@ -90,7 +69,6 @@
 
 </div>
 
-{% load static %}
 <script src="{% static 'js/controls.js' %}"></script>
 
 

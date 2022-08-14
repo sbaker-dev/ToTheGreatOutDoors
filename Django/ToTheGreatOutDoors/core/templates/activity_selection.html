@@ -1,0 +1,14 @@
+<!--Allow a user to select a given activity category to filter the place types on -->
+
+<div>
+    <label class="textStandard" for="SelectActivity">What kind of place would you like to go?</label>
+    <select class="form-control form-control-lg" id="SelectActivity">
+
+        {% for category in categories_list %}
+            <option value="CT-{{category}}">{{category}}</option>
+        {% endfor %}
+
+
+    </select>
+
+</div>
