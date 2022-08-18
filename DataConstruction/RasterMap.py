@@ -6,11 +6,12 @@ import exifread
 
 
 class ReformatRaster:
-    def __init__(self, env_path: Path, window_size: int, image_scale: float = 1.0):
+    def __init__(self, env_path: Path, window_size: int, image_scale: float = 1.0, image_compression: int = 0):
 
         self.env = load_yaml(env_path)
         self.root = load_yaml(env_path)['os_data']['os_raster']
         self.image_scale = image_scale
+        self.image_compression = image_compression
         self.window_size = window_size
         self.raster_positions = {}
 
@@ -37,7 +38,8 @@ class ReformatRaster:
         img = ImageObject(load_image(Path(self.root, file_name)))
         img.flip_vertical()
         img.resize(self.image_scale)
-        img.write_to_file(Path(Path(__file__).parent.parent, 'Django', 'static', 'images'), Path(file_name).stem)
+        img.write_to_file(Path(Path(__file__).parent.parent, 'Django', 'static', 'images'), Path(file_name).stem,
+                          'png', self.image_compression)
 
     def extract_meta_data(self, file_name: str):
         """Isolate the meta data, specifically the starting map location, as we need that to place the map"""
@@ -61,4 +63,4 @@ class ReformatRaster:
 
 
 if __name__ == '__main__':
-    ReformatRaster(Path(Path(__file__).parent.parent, "env.yaml"), 2000, 0.5)()
+    ReformatRaster(Path(Path(__file__).parent.parent, "env.yaml"), 2000, 0.4, 9)()
