@@ -1,0 +1,5 @@
+<!-- SVG Image, hence why tags do not align with standard img/ tags. Used to display Raster data on the map-->
+
+{% for map in raster_list %}
+    <image x="{{ map.x }}" y="{{ map.y }}" width="{{ map.size }}" height="{{ map.size }}" id="{{ map.place }}" href='/static/images/{{ map.place }}.png'></image>
+{% endfor %}
