@@ -1,5 +1,61 @@
+
 {% extends 'core/main.html' %}
 
 {% block content %}
 
-{% endblock %}
+
+{% load static %}
+
+    <br>
+    <br>
+
+<div style="display: grid; grid-template-columns: 30% 70%">
+
+    <!-- Information panel -->
+    <div style="padding: 20px; display: grid; grid-template-rows: 20% 10% 10% 10% 10% 10% 10% 20%">
+
+
+        <!-- how to control the map -->
+        {% include 'components/selection/map_controls.html' %}
+
+        <h2 id="LocationName">No place Selected</h2>
+        <p id="LocationCategory" class="textStandard">Category: No place Selected</p>
+        <a id="LocationExternalLink"  class="textStandard" target="_blank">Link: No place Selected</a>
+        <label class="textStandard" for="PostCode">Directions from post code</label>
+        <input id="PostCode" type="text" class="textStandard">
+        <br>
+        <a class="textStandard  btn-primary" style="text-align: center; padding: 40px">Get directions</a>
+        <p></p>
+
+    </div>
+
+    <div id="svgContainer" style="padding: 20px">
+
+        <!--Zoom / X-pos / Y-pos / Recenter position -->
+        {% include 'components/map/map_position.html' %}
+
+        <!-- canvas for the map to be drawn on -->
+        <svg id="svgImage" style="background-color: #E4F0FE; transform: rotateX(180deg)" fill-rule="evenodd" height="85vh" width="65vw" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+            <!--Draw the raster maps-->
+            {% include 'components/map/raster_maps.html' %}
+
+            {% for location in locations_list %}
+                <path d="{{location.svg}}" id="BD-{{location.place}}" style="fill: #A298C4; opacity: 60%"></path>
+            {% endfor %}
+
+            {% for destination in travel_locations %}
+                <path onclick=ChangeSelected(id)  d="{{destination.svg}}" id="{{ destination.name }}${{ destination.category }}${{ destination.link }}"  style="fill: #2D2E44;"></path>
+            {% endfor %}
+
+        </svg>
+
+    </div>
+
+</div>
+
+<script src="{% static 'js/controls.js' %}"></script>
+    <script src="{% static 'js/location.js' %}"></script>
+
+
+{% endblock content %}
