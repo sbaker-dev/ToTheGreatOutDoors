@@ -11,50 +11,45 @@
 <div style="display: grid; grid-template-columns: 30% 70%">
 
     <!-- Information panel -->
-    <div style="padding: 20px">
+    <div style="padding: 20px; display: grid; grid-template-rows: 20% 20% 20% 20% 20%">
+
+
+        <!-- how to control the map -->
+        {% include 'components/selection/map_controls.html' %}
 
         <!-- Selection of location -->
-        {% include 'components/map/area_selection.html' %}
-        <br>
+        {% include 'components/selection/area_selection.html' %}
 
         <!-- Selection of activity -->
-        {% include 'components/activity_selection.html' %}
+        {% include 'components/selection/activity_selection.html' %}
+
+        <!-- Move to the county view with the current desired locations selected. Default URL is altered by javascript-->
+        <a class="btn btn-primary" style="text-align: center; padding: 70px" href="{% url 'county' 'Buckinghamshire' 'National Trust' %}" id="LetsGo">Let's go!</a>
 
     </div>
-
-
-
-
-
 
     <div id="svgContainer" style="padding: 20px">
 
         <!--Zoom / X-pos / Y-pos / Recenter position -->
-        {% include 'components/map/map_controls.html' %}
+        {% include 'components/map/map_position.html' %}
 
-
+        <!-- canvas for the map to be drawn on -->
         <svg id="svgImage" style="background-color: #E4F0FE; transform: rotateX(180deg)" fill-rule="evenodd" height="85vh" width="65vw" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <style>
                 path {
                     stroke-width: 0.05px;
                     stroke: black;
-
                 }
             </style>
 
+            <!--Draw the raster maps-->
             {% include 'components/map/raster_maps.html' %}
 
 
+            <!-- Draw the vector maps -->
             {% include 'components/map/vector_polygons.html' %}
 
-
-
-
-
         </svg>
-
-
-
 
     </div>
 
