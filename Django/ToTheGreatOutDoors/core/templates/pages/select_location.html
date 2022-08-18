@@ -33,7 +33,7 @@
         {% include 'components/map/map_controls.html' %}
 
 
-        <svg id="svgImage" style="background-color: gray; transform: rotateX(180deg)" fill-rule="evenodd" height="85vh" width="65vw" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <svg id="svgImage" style="background-color: #E4F0FE; transform: rotateX(180deg)" fill-rule="evenodd" height="85vh" width="65vw" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <style>
                 path {
                     stroke-width: 0.05px;
@@ -42,21 +42,16 @@
                 }
             </style>
 
-            <!-- Show the map ONLY if it is within a bound. THis does mean we need to (somehow, create a relation map
-            for the maps as well-->
-            <image x="200" y="600" width="50" height="50" xlink:href='/static/images/HP.png'></image>
-            <image x="200" y="550" width="50" height="50" xlink:href='/static/images/HU.png'></image>
+
+            <!-- Width and Height shouldn't change, but they are magic numbers as is... -->
+            {% for map in raster_list %}
+                <image x="{{ map.x }}" y="{{ map.y }}" width="{{ map.size }}" height="{{ map.size }}" id="{{ map.place }}" href='/static/images/{{ map.place }}.png'></image>
+            {% endfor %}
 
 
-{#            <!-- Width and Height shouldn't change, but they are magic numbers as is... -->#}
-{#            <!-- map position is wrong -->#}
-{#            {% for map in raster_list %}#}
-{#                <image x="{{ map.x }}" y="{{ map.y }}" width="50" height="50" id="{{ map.place }}" xlink:href='/static/images/{{ map.place }}.png'></image>#}
-{##}
-{#            {% endfor %}#}
 
             {% for location in locations_list %}
-                <path onclick="SelectViaMapLocation(id)" d="{{location.svg}}" id="BD-{{location.place}}" style="fill: #A298C4"></path>
+                <path onclick="SelectViaMapLocation(id)" d="{{location.svg}}" id="BD-{{location.place}}" style="fill: #A298C4; opacity: 80%"></path>
             {% endfor %}
 
 

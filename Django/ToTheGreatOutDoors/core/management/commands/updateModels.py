@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from ...models import TravelLocation, Boundary
+from ...models import TravelLocation, Boundary, RasterMap
 
 from .ConstructData import ConstructData, Location
 
@@ -37,9 +37,14 @@ class Command(BaseCommand):
         # Construct the json databases from the location data
         location_database = self._location_database()
 
+        # Construct the boundary polygonal table
         self._construct_boundaries(location_database)
 
-        self._construct_database_locations(location_database)
+        # Construct the raster image table
+        self._construct_raster()
+
+        # Construct the location table
+        self._construct_locations(location_database)
 
     def _initialise_arguments(self, kwargs: dict):
         """Initialise the arguments from the command line to __init__"""
@@ -64,9 +69,11 @@ class Command(BaseCommand):
                          for place, data in location_database.boundary.items()]
         Boundary.objects.bulk_create(boundary_list)
 
-    def _construct_database_locations(self, location_db: ConstructData):
+    def _construct_locations(self, location_db: ConstructData):
         """Assign each travel location to the database"""
         print("Assigning travel location...")
+        # TODO: For a selection of places (just assign in __init__ for now), do the older save root, so we can add
+        #   user data
 
         location_database = [self._assign_locations(name, place)
                              for database in location_db.location_data for name, place in database.items()]
@@ -81,3 +88,11 @@ class Command(BaseCommand):
                                   place=self.place_relations[name])
         except KeyError:
             pass
+
+    def _construct_raster(self):
+        """Assign the raster location data"""
+        print("Assigning raster data")
+        raster_data = load_json(self.env['output_data_root'] + "/RasterPositions.txt")
+        raster_database = [RasterMap(place=map_name, x=map_values['X'], y=map_values['Y'], size=map_values['Size'])
+                           for map_name, map_values in raster_data.items()]
+        RasterMap.objects.bulk_create(raster_database)

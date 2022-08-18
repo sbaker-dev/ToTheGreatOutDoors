@@ -6,10 +6,11 @@ import exifread
 
 
 class ReformatRaster:
-    def __init__(self, env_path: Path, window_size: int):
+    def __init__(self, env_path: Path, window_size: int, image_scale: float = 1.0):
 
         self.env = load_yaml(env_path)
         self.root = load_yaml(env_path)['os_data']['os_raster']
+        self.image_scale = image_scale
         self.window_size = window_size
         self.raster_positions = {}
 
@@ -35,6 +36,7 @@ class ReformatRaster:
         """
         img = ImageObject(load_image(Path(self.root, file_name)))
         img.flip_vertical()
+        img.resize(self.image_scale)
         img.write_to_file(Path(Path(__file__).parent.parent, 'Django', 'static', 'images'), Path(file_name).stem)
 
     def extract_meta_data(self, file_name: str):
@@ -43,13 +45,20 @@ class ReformatRaster:
 
         # Extract the start location from 0x8482
         tags = exifread.process_file(tiff_file)
+
+        # Isolate the start positions
         _, _, _, start_x, start_y, _ = tags['Image Tag 0x8482'].values
 
-        # Assign the x and y relative to the window size, then close the file
+        # Isolate the size
+        relative_size = sum([v[0] for v in tags['Image Tag 0x830E'].values])
+
+        # Assign the x and y relative to the window size. Adjust the y on relative size as we are top down, not bottom
+        # up, then close the file
         self.raster_positions[Path(file_name).stem] = {"X": start_x[0] / self.window_size,
-                                                       "Y": start_y[0] / self.window_size}
+                                                       "Y": (start_y[0] / self.window_size - relative_size),
+                                                       "Size": relative_size}
         tiff_file.close()
 
 
 if __name__ == '__main__':
-    ReformatRaster(Path(Path(__file__).parent.parent, "env.yaml"), 2000)()
+    ReformatRaster(Path(Path(__file__).parent.parent, "env.yaml"), 2000, 0.5)()
