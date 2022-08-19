@@ -1,8 +1,8 @@
 <!--Allow a user to select a location to visit -->
 
 <div>
-    <label class="textStandard" for="SelectPlace">Where to explore today?</label>
-    <select class="form-control form-control-lg" onchange="SelectViaSelection()" id="SelectPlace">
+    <label class="textStandard" for="SelectionBox">Where to explore today?</label>
+    <select class="form-control form-control-lg" onchange="PlaceViaSelect()" id="SelectionBox">
 
     {% for location in locations_list %}
         <option value="BD-{{location.place}}">{{location.place}}</option>

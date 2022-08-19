@@ -1,16 +1,51 @@
-let previousLocation = document.getElementById('SelectPlace').value
+
+let selectionID = 'SelectionBox'
+let previousLocation = document.getElementById(selectionID).value
+
 
 /**
- * Change the colour of a polygon if the user changes the location selection via the selection box.
+ * For the location that has been selected via the selection menu, change the current selection colour back to the
+ * default and set the clicked elements colour to the selection colour
  */
-function SelectViaSelection(){
+function ChangeOnSelectionSelect(selectionColour, defaultColour){
     // Set the last known value to be its default
-    document.getElementById(previousLocation).style.fill = '#A298C4';
+    document.getElementById(previousLocation).style.fill = defaultColour;
 
     // Get the newly selected value, assign it as selected, and update previousLocation
-    const newValue = document.getElementById('SelectPlace').value;
-    document.getElementById(newValue).style.fill = "lightblue"
+    const newValue = document.getElementById(selectionID).value;
+    document.getElementById(newValue).style.fill = selectionColour;
     previousLocation = newValue
+    return newValue
+}
+
+
+/**
+ * Get the original value from the Select container, and set this to the default colour. Then, use the current place's
+ * id to select the new polygon on the map and changes it colour to the selection colour
+ */
+function ChangeOnPolygonSelect(place_id, selectionColour, defaultColour){
+
+    console.log(document.getElementById(selectionID))
+
+    // Set the old value to be default
+    const selectionBox = document.getElementById(selectionID);
+    document.getElementById(selectionBox.value).style.fill = defaultColour;
+
+    // Set the new value to be blue
+    document.getElementById(selectionID).value = place_id;
+    document.getElementById(place_id).style.fill = selectionColour;
+    previousLocation = place_id;
+}
+
+
+/**
+ * Change the colour of a polygon if the user changes the location selection via the selection box. Then, change the
+ * href element based on this
+ */
+function PlaceViaSelect(){
+
+    // Change the polygon selection
+    let newValue = ChangeOnSelectionSelect("lightblue", '#A298C4')
 
     // Assign this to the href button, slicing off the BD- ID linker
     ChangeLocationHref(1, newValue.slice(3))
@@ -21,15 +56,9 @@ function SelectViaSelection(){
  * Change the value of the selection box when an individual selects a polygon on the map
  * @param place_id id parameter of the selected component
  */
-function SelectViaMapLocation(place_id){
-    // Set the old value to be blue
-    const selectionBox = document.getElementById('SelectPlace');
-    document.getElementById(selectionBox.value).style.fill = '#A298C4';
+function PlaceViaMap(place_id){
 
-    // Set the new value to be red
-    document.getElementById("SelectPlace").value = place_id;
-    document.getElementById(place_id).style.fill = "lightblue";
-    previousLocation = place_id;
+    ChangeOnPolygonSelect(place_id, "lightblue", '#A298C4')
 
     // Assign this to the href button, slicing off the BD- ID linker
     ChangeLocationHref(1, place_id.slice(3))
@@ -37,10 +66,8 @@ function SelectViaMapLocation(place_id){
 
 }
 
-
 /**
  * Update the Href of the location selection with the activity
- * @constructor
  */
 function SelectActivity(){
     // Get the newly selected value and assign it to the href
@@ -76,6 +103,56 @@ function ChangeLocationHref(override_index, replacement_value){
 
     // Reassign the attribute with the updated value
     link_button.setAttribute('href', new_link)
+}
 
+
+/**
+ * Select a given location via the polygon map, then extract it's data link attribute and set the external link a href
+ * and text
+ */
+function LocationViaMap(place_id){
+
+    // Change the selected polygon via the map, and update the selection box
+    ChangeOnPolygonSelect(place_id, "lightblue",'#2D2E44');
+
+    // Extract the link from the data attribute data-link
+    let externalLink = document.getElementById(place_id).getAttribute('data-link');
+
+    // Conditionally set the external link
+    SetExternalLink(externalLink)
+
+
+}
+
+/**
+ * Select the location via the select menu, then extract it's associated polygon data link attribute and set the
+ * external link a href and text
+ */
+function LocationViaSelect(){
+
+    let place_id = ChangeOnSelectionSelect("lightblue",'#2D2E44')
+
+    // Extract the link from the data attribute data-link
+    let externalLink = document.getElementById(place_id).getAttribute('data-link');
+
+    // Conditionally set the external link
+    SetExternalLink(externalLink)
+}
+
+
+/**
+ * Set the external link, conditional on existance.
+ */
+function SetExternalLink(external_link){
+    const link_part = document.getElementById('LocationExternalLink')
+    if (external_link === 'None'){
+        link_part.innerText = "No external links"
+        link_part.removeAttribute("href")
+    }
+    else {
+        link_part.innerText = "More information here"
+        link_part.setAttribute("href", external_link)
+
+    }
 
 }

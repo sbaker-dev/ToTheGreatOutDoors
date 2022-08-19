@@ -1,0 +1,13 @@
+<!--Allow a user to select a place to visit -->
+
+<div>
+    <label class="textStandard" for="SelectionBox">Where to explore today?</label>
+    <select class="form-control form-control-lg" onchange="LocationViaSelect()" id="SelectionBox">
+
+        {% for destination in travel_locations %}
+            <option value="{{destination.name}}">{{destination.name}}</option>
+        {% endfor %}
+
+    </select>
+
+</div>

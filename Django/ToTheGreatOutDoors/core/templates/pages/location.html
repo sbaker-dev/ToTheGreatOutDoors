@@ -12,20 +12,43 @@
 <div style="display: grid; grid-template-columns: 30% 70%">
 
     <!-- Information panel -->
-    <div style="padding: 20px; display: grid; grid-template-rows: 20% 10% 10% 10% 10% 10% 10% 20%">
+    <div style="padding: 20px; display: grid; grid-template-rows: 20% 20% 40% 20%">
 
 
+        <!--
+            TODO: Scrap most of this div, and remake the select locations, but for travel locations (mabye rename select
+                locations to select county).
+                We then create a location page, that sets these values via django
+                At this point, we also want to add the comment features etc
+
+                Then, we can also create a search link (2nd option on main) that just returns page links to these
+                locations IF they have similar names
+
+
+        -->
         <!-- how to control the map -->
         {% include 'components/selection/map_controls.html' %}
 
-        <h2 id="LocationName">No place Selected</h2>
-        <p id="LocationCategory" class="textStandard">Category: No place Selected</p>
-        <a id="LocationExternalLink"  class="textStandard" target="_blank">Link: No place Selected</a>
-        <label class="textStandard" for="PostCode">Directions from post code</label>
-        <input id="PostCode" type="text" class="textStandard">
-        <br>
-        <a class="textStandard  btn-primary" style="text-align: center; padding: 40px">Get directions</a>
-        <p></p>
+        <div style="margin-bottom: 10px">
+            {% include 'components/selection/place_selection.html' %}
+            <a id="LocationExternalLink"  class="textStandard" target="_blank">No external links</a>
+
+            <br>
+
+        </div>
+
+        <div style="margin-top: 10px">
+            <h2>Comments</h2>
+        </div>
+
+        <div>
+            <label class="textStandard" for="PostCode">Directions from post code</label>
+            <input id="PostCode" type="text" class="textStandard">
+            <br>
+            <a class="textStandard  btn-primary" style="text-align: center;">Get directions</a>
+        </div>
+
+
 
     </div>
 
@@ -40,13 +63,11 @@
             <!--Draw the raster maps-->
             {% include 'components/map/raster_maps.html' %}
 
-            {% for location in locations_list %}
-                <path d="{{location.svg}}" id="BD-{{location.place}}" style="fill: #A298C4; opacity: 60%"></path>
-            {% endfor %}
+            <!--Draw the county that was selected in the previous view -->
+            {% include 'components/map/vector_location_place.html' %}
 
-            {% for destination in travel_locations %}
-                <path onclick=ChangeSelected(id)  d="{{destination.svg}}" id="{{ destination.name }}${{ destination.category }}${{ destination.link }}"  style="fill: #2D2E44;"></path>
-            {% endfor %}
+            <!--Draw the locations that matched the selected category on the map -->
+            {% include 'components/map/vector_locations.html' %}
 
         </svg>
 
@@ -55,7 +76,7 @@
 </div>
 
 <script src="{% static 'js/controls.js' %}"></script>
-    <script src="{% static 'js/location.js' %}"></script>
+    <script src="{% static 'js/selection.js' %}"></script>
 
 
 {% endblock content %}

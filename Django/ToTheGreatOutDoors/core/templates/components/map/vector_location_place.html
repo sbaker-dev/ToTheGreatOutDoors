@@ -1,0 +1,6 @@
+<!-- Draw the selected location on the map. By design (at the moment) you can only select one place. However, you
+could allow the user to select multiple places, and if you do, then this should extend with that logic.-->
+
+{% for location in locations_list %}
+    <path d="{{location.svg}}" id="BD-{{location.place}}" style="fill: #A298C4; opacity: 60%"></path>
+{% endfor %}
