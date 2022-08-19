@@ -39,3 +39,8 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-updated', '-created']
+
+
+class Favorite(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    location = models.ForeignKey(TravelLocation, on_delete=models.CASCADE)

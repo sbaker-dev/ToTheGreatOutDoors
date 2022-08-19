@@ -6,8 +6,9 @@ from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.core.exceptions import ObjectDoesNotExist
 
-from .models import Boundary, TravelLocation, RasterMap, Comment
+from .models import Boundary, TravelLocation, RasterMap, Comment, Favorite
 
 
 # Create your views here.
@@ -102,14 +103,37 @@ def place(request, place_name, place_location):
     location = location[0]
     comment_list = location.comment_set.all().order_by('-created')
 
-    if request.method == "POST":
-        Comment.objects.create(user=request.user,
-                               location=location,
-                               body=request.POST.get('body'))
-        print("HERE?")
-        return redirect('place', place_name=place_name, place_location=place_location)
+    fav_list = Favorite.objects.filter(Q(user=request.user) & Q(location=location))
 
-    context = {'comment_list': comment_list, 'location': location}
+    if request.method == "POST":
+        # New comment has been posted, update.
+        if 'comment' in request.POST:
+            Comment.objects.create(user=request.user,
+                                   location=location,
+                                   body=request.POST.get('body'))
+            return redirect('place', place_name=place_name, place_location=place_location)
+
+        elif 'favourite' in request.POST:
+
+            # If it was a favourite, un-favourite it
+            try:
+                Favorite.objects.get(user=request.user, location=location).delete()
+                print("Removing fav")
+                return redirect('place', place_name=place_name, place_location=place_location)
+
+            # Otherwise, add it as a fav
+            except ObjectDoesNotExist:
+                print("Adding Fav")
+                Favorite.objects.create(user=request.user, location=location)
+                return redirect('place', place_name=place_name, place_location=place_location)
+
+        else:
+            print(f"Found unexpected POST command of {request.POST}")
+
+    print(len(fav_list))
+
+
+    context = {'comment_list': comment_list, 'location': location, 'favourite': len(fav_list) == 1}
     return render(request, 'pages/place_details.html', context)
 
 
