@@ -1,0 +1,27 @@
+<div style="display: grid; grid-template-columns: 30% 40% 30%; padding-top: 10%">
+
+    <div></div>
+
+    <div>
+        <div style="background-color: #A298C4; padding: 50px">
+            <form method="POST" action="">
+            {% csrf_token %}
+            {{form.as_p}}
+
+            <input class="btn-primary" type="submit" value="Register">
+
+            </form>
+            <br>
+            <br>
+            <p class="">Already have an account?</p>
+            <a class="btn-primary " style="padding: 10px" href="{% url 'login' %}">SignIn</a>
+
+
+        </div>
+
+    </div>
+
+    <div></div>
+
+</div>
+

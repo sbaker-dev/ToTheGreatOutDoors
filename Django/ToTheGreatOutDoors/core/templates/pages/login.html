@@ -1,0 +1,20 @@
+{% extends 'core/main.html' %}
+
+{% block content %}
+    <br>
+    <br>
+    <br>
+
+
+{% if page == 'login' %}
+
+    {% include 'components/user/login_panel.html' %}
+
+
+{% else %}
+    {% include 'components/user/signup_panel.html' %}
+
+{% endif %}
+
+
+{% endblock content %}
