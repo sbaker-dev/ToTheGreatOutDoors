@@ -7,10 +7,12 @@ urlpatterns = [
     path('', views.home, name="home"),
     path('select_location/', views.select_location, name="select_location"),
     path('county/<str:pk>/<str:place_type>', views.county, name='county'),
+    path('place/<str:place_name>/<str:place_location>/', views.place, name='place'),
 
-    # User authentication / account settings
+    # User authentication / interaction / account settings
     path('login/', views.login_page, name='login'),
     path('register_user/', views.register_user, name='registerUser'),
     path('logout/', views.logout_user, name="logOut"),
+    path('delete-message<str:pk>', views.delete_message, name="deleteMessage"),
 
 ]

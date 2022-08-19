@@ -1,0 +1,28 @@
+{% extends 'core/main.html' %}
+
+{% block content %}
+
+    <br>
+    <br>
+    <br>
+
+
+<form method="POST" action="">
+
+    <div style="display: grid; grid-template-rows: 30% 30% 40%; padding: 300px">
+
+        {% csrf_token %}
+        <p>Are you sure you want to delete "{{obj}}"?</p>
+        <a class="btn-primary; text-center" href="{{request.META.HTTP_REFERER}}">Go Back</a>
+        <input type="submit" value="Confirm">
+
+    </div>
+
+
+
+
+
+
+</form>
+
+{% endblock content %}

@@ -1,0 +1,85 @@
+
+{% extends 'core/main.html' %}
+
+{% block content %}
+
+
+{% load static %}
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+<div style="display: grid; grid-template-rows: 100px 150px; padding: 50px">
+
+    <div style="display: grid; grid-template-columns: 70% 30%; padding-bottom: 50px">
+
+        <div>
+            <h1 style="font-size: 50px; color: #A298C4">{{ location.name }}</h1>
+            <p class="textStandard">{{ location.place }}</p>
+            <p class="textStandard">Category: {{ location.category }}</p>
+
+            {% if location.link != None %}
+                <a class="textStandard" href="{{ location.link }}" target="_blank" >External information</a>
+            {% else %}
+                <a class="textStandard"></a>
+            {% endif %}
+
+
+        </div>
+
+        <div>
+            <label class="textStandard" for="PostCode">Get Directions from your post code</label>
+            <input id="PostCode" type="text" class="textStandard" style="width: 100%">
+        </div>
+
+        <br>
+        <br>
+        <br>
+        <br>
+
+    </div>
+
+    <div></div>
+
+    <!-- Comments section-->
+    <div style="margin-top: 10px">
+        <h2>Comments</h2>
+
+        {% if request.user.is_authenticated %}
+            <div class="comment-form">
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <input type="text" name="body" placeholder="Write your message here...">
+
+                </form>
+            </div>
+        {% endif %}
+
+        <br>
+
+        {% for com in comment_list %}
+            <div>
+                {% if request.user == com.user %}
+                <a href="{% url 'deleteMessage' com.id %}">Delete</a>
+                {% endif %}
+
+                <small>{{com.user}} {{com.created|timesince}} ago</small>
+                <p>{{com.body}}</p>
+                <hr>
+
+            </div>
+
+        {% endfor %}
+
+
+
+    </div>
+
+
+</div>
+
+
+
+{% endblock %}
