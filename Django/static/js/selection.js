@@ -107,36 +107,27 @@ function ChangeLocationHref(override_index, replacement_value){
 
 
 /**
- * Select a given location via the polygon map, then extract it's data link attribute and set the external link a href
- * and text
+ * Select a given location via the polygon map and add its name to the link button
  */
 function LocationViaMap(place_id){
 
     // Change the selected polygon via the map, and update the selection box
     ChangeOnPolygonSelect(place_id, "lightblue",'#2D2E44');
 
-    // Extract the link from the data attribute data-link
-    let externalLink = document.getElementById(place_id).getAttribute('data-link');
 
-    // Conditionally set the external link
-    SetExternalLink(externalLink)
-
-
+    // Assign this to the href button, slicing off the BD- ID linker
+    ChangeLocationHref(1, place_id)
 }
 
 /**
- * Select the location via the select menu, then extract it's associated polygon data link attribute and set the
- * external link a href and text
+ * Select the location via the select menu and add its name to the link button
  */
 function LocationViaSelect(){
 
     let place_id = ChangeOnSelectionSelect("lightblue",'#2D2E44')
 
-    // Extract the link from the data attribute data-link
-    let externalLink = document.getElementById(place_id).getAttribute('data-link');
-
-    // Conditionally set the external link
-    SetExternalLink(externalLink)
+    // Assign this to the href button, slicing off the BD- ID linker
+    ChangeLocationHref(1, place_id)
 }
 
 

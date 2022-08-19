@@ -12,42 +12,17 @@
 <div style="display: grid; grid-template-columns: 30% 70%">
 
     <!-- Information panel -->
-    <div style="padding: 20px; display: grid; grid-template-rows: 20% 20% 40% 20%">
+    <div style="padding: 20px; display: grid; grid-template-rows: 20% 60% 20%">
 
-
-        <!--
-            TODO: Scrap most of this div, and remake the select locations, but for travel locations (mabye rename select
-                locations to select county).
-                We then create a location page, that sets these values via django
-                At this point, we also want to add the comment features etc
-
-                Then, we can also create a search link (2nd option on main) that just returns page links to these
-                locations IF they have similar names
-
-
-        -->
         <!-- how to control the map -->
         {% include 'components/selection/map_controls.html' %}
 
+        <!-- List of places that can be visited -->
         <div style="margin-bottom: 10px">
             {% include 'components/selection/place_selection.html' %}
-            <a id="LocationExternalLink"  class="textStandard" target="_blank">No external links</a>
-
-            <br>
-
         </div>
 
-        <div style="margin-top: 10px">
-            <h2>Comments</h2>
-        </div>
-
-        <div>
-            <label class="textStandard" for="PostCode">Directions from post code</label>
-            <input id="PostCode" type="text" class="textStandard">
-            <br>
-            <a class="textStandard  btn-primary" style="text-align: center;">Get directions</a>
-        </div>
-
+        <a class="btn btn-primary" style="text-align: center; padding: 70px" href="{% url 'place' 'place' %}" id="LetsGo">Let's go!</a>
 
 
     </div>
