@@ -103,7 +103,10 @@ def place(request, place_name, place_location):
     location = location[0]
     comment_list = location.comment_set.all().order_by('-created')
 
-    fav_list = Favorite.objects.filter(Q(user=request.user) & Q(location=location))
+    if request.user.is_authenticated:
+        fav_list = Favorite.objects.filter(Q(user=request.user) & Q(location=location))
+    else:
+        fav_list = []
 
     if request.method == "POST":
         # New comment has been posted, update.

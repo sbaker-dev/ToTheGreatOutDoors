@@ -11,6 +11,7 @@ urlpatterns = [
 
     # User authentication / interaction / account settings
     path('login/', views.login_page, name='login'),
+    path('logout/', views.logout_user, name='logout'),
     path('register_user/', views.register_user, name='registerUser'),
     path('logout/', views.logout_user, name="logOut"),
     path('delete-message<str:pk>', views.delete_message, name="deleteMessage"),

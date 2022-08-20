@@ -6,12 +6,28 @@
         </div>
     </a>
 
+
     <div class="imageLinks" style="background-image: url('/static/coverImages/SearchLink.png');">
         <p class="textStandard homeContainerText">Search for a Location</p>
     </div>
 
-    <div class="imageLinks" style="background-image: url('/static/coverImages/AccountLink.png');">
-        <p class="textStandard homeContainerText">Setup an Account</p>
-    </div>
+    {% if request.user.is_authenticated %}
+        <a href="{% url 'accountPage' %}">
+            <div class="imageLinks" style="background-image: url('/static/coverImages/AccountLink.png');">
+                <p class="textStandard homeContainerText">Head to Account</p>
+            </div>
+        </a>
+
+    {% else %}
+
+        <a href="{% url 'login' %}">
+            <div class="imageLinks" style="background-image: url('/static/coverImages/AccountLink.png');">
+                <p class="textStandard homeContainerText">Setup an Account</p>
+            </div>
+        </a>
+
+    {% endif %}
+
+
 
 </div>
