@@ -1,0 +1,28 @@
+<!-- Results from a search.
+By default (pre search) searchStatus will be zero, so we display some boiler plate text.
+Then, if we don't find anything, the matchLength will be zero, so we warning the user that their input was accepted, but
+there was no result.
+Finally, if we do find something, we display a link for each location -->
+
+<div style="align-items: center; padding: 50px">
+
+    {% if searchStatus == 0 %}
+        <h3> Found locations will appear here</h3>
+
+    {% elif matchLength == 0 %}
+        <h3>Sorry, failed to find any location containing {{ searchName }}</h3>
+
+    {% else %}
+
+        <h3>Found the following locations containing <strong style="color: #A298C4">{{ searchName }}</strong> </h3>
+
+        {% for match in matchLocation %}
+
+            <a class="btn" style="background-color: #A298C4; width: 100%; color: white;" href="{% url 'place' match.name match.place %}">{{ match.name}}</a>
+            <hr>
+
+        {% endfor %}
+
+    {% endif %}
+
+</div>
