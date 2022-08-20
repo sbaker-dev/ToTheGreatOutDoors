@@ -9,6 +9,7 @@ urlpatterns = [
     path('county/<str:pk>/<str:place_type>', views.county, name='county'),
     path('place/<str:place_name>/<str:place_location>/', views.place, name='place'),
     path('search/', views.search_location, name="search_location"),
+    path('contact', views.contact, name='contact'),
 
     # User authentication / interaction / account settings
     path('login/', views.login_page, name='login'),

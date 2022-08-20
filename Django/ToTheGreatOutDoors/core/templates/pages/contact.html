@@ -1,0 +1,115 @@
+
+{% extends 'core/main.html' %}
+
+{% block content %}
+
+    {% load static %}
+
+
+<div id="cover">
+  <div class="jumbotronContact jumbotron-fluid">
+    <div class="container">
+      <h1 class="text-center" style="font-size: 60px; margin-top: 200px; font-weight: 600;">Start a Conversation</h1>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div style="display: grid; grid-template-columns: 45% 10% 45%; margin: 10%">
+
+    <div>
+      <h1 class="headingTitle">How can we help you?</h1>
+      <h2 class="headingTitle">Good experience? Bad experience? We want to hear from you</h2>
+      <p class="textStandard">
+          Did your day out go as planned? If we helped you get outside, we would love to hear from you. However, just
+          as importantly, if you had any issues resulting with the application, do get in touch. We strive to make a
+          quick changes to feedback, so we can help you and others best enjoy your free time outdoors.
+
+      </p>
+
+      <h2 class="headingTitle">Broken links</h2>
+      <p class="textStandard">
+        Found an issue with the links of the locations? Let us know! We will fix it as soon as possible
+      </p>
+
+      <h2 class="headingTitle">Business partnership</h2>
+      <p class="textStandard">
+        Do you offer bespoke tours of the UK? A provider of walking information, owner of a property that welcomes
+          guests? If your not listed in our database, and you want to be, we can make that happen!
+      </p>
+
+      <h2 class="headingTitle">Anything else</h2>
+      <p class="textStandard">
+        Did we miss something? We are always happy to hear from you, so get in touch if you need anything!
+      </p>
+
+
+    </div>
+
+    <div>
+
+    </div>
+
+    <div>
+      <h4 class="title">Please Note: All Fields are required</h4>
+
+      <form>
+        <label for="EF-Title">Title</label>
+        <input class="form-control" type="text" id="EF-Title">
+        <br>
+
+        <label for="EF-First_Name">First Name</label>
+        <input class="form-control" type="text" id="EF-First_Name">
+        <br>
+
+        <label for="EF-Last Name">Last Name</label>
+        <input class="form-control" type="text" id="EF-Last Name">
+        <br>
+
+        <label for="EF-Email">Email</label>
+        <input class="form-control" type="text" id="EF-Email">
+        <br>
+
+        <label for="EF-WorkName">Company/Institution name</label>
+        <input class="form-control" type="text" id="EF-WorkName">
+        <small class="text-muted">
+          If you are contacting us as an individual, rather than as as part of an company/institution, that's completely
+          fine! Please just put NA if that's the case.</small>
+        <br>
+        <br>
+
+        <label for="EF-Purpose">Type of message</label>
+        <select class="form-control" id="EF-Purpose">
+              <option selected>Choose...</option>
+              <option>Broken or improper Link</option>
+              <option>Faulty Location</option>
+              <option>Missing Location</option>
+              <option>Business Partnership</option>
+              <option>Other</option>
+
+        </select>
+        <br>
+
+        <label for="EF-Message">Message</label>
+        <textarea class="form-control" style="height: 250px" id="EF-Message"></textarea>
+
+      </form>
+
+      <br>
+
+      <button type="button" class="btn btn-primary btn-lg btn-block">Send</button>
+
+
+
+    </div>
+
+
+
+  </div>
+
+
+
+</div>
+
+{% endblock %}

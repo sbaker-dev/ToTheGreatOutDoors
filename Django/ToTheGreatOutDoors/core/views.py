@@ -169,3 +169,7 @@ def search_location(request):
         context['searchName'] = request.POST.get('searchName')
 
     return render(request, 'pages/search_location.html', context)
+
+
+def contact(request):
+    return render(request, 'pages/contact.html')

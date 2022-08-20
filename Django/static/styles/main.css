@@ -99,3 +99,20 @@
     margin-top: 50px;
     color: #2D2E44;
 }
+
+
+.jumbotronContact{
+    background-image: url('/static/coverImages/MountainsCover.png');
+    background-size: 75%;
+    background-position: top;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color:white !important;
+    height:50vh;
+}
+
+.headingTitle{
+    color: #A298C4;
+    margin-top: 5vh;
+
+}
