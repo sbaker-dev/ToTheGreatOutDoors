@@ -1,3 +1,5 @@
+<!-- Display each comment that exists within a list of comments -->
+
 {% for com in comment_list %}
     <div>
         {% if request.user == com.user %}

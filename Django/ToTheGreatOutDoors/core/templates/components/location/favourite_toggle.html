@@ -1,3 +1,6 @@
+<!-- If the user is logged in, they can toggle the favourite button to add it to their favourite list; shown in the
+account page. If they click it again, it is removed-->
+
 {% if request.user.is_authenticated %}
 
     <form method="POST" action="">
