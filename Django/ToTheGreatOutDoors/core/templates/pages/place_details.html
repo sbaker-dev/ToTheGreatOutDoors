@@ -16,31 +16,13 @@
     <div style="display: grid; grid-template-columns: 70% 30%;">
 
         <div>
-            <h1 style="font-size: 50px; color: #A298C4">{{ location.name }}</h1>
-            <p class="textStandard">{{ location.place }}</p>
-            {% if location.link != None %}
-                <a class="textStandard" href="{{ location.link }}" target="_blank" >External information</a>
-            {% else %}
-                <a class="textStandard">No external information</a>
-            {% endif %}
+
+            {% include 'components/location/details.html' %}
+
 
             <br>
 
-            {% if request.user.is_authenticated %}
-
-                <form method="POST" action="">
-                    {% csrf_token %}
-                    <input type="hidden" name="favourite" value="">
-
-                    {% if favourite != True %}
-                        <input type="submit" name="favourite" class="btn" value="Add to Favourites?">
-
-                    {% else %}
-                        <input type="submit" name="favourite" class="btn" value="In your Favourites!" style="background-color: #A298C4; color: white">
-                    {% endif %}
-
-                </form>
-            {% endif %}
+            {% include 'components/location/favourite_toggle.html' %}
 
 
         </div>
@@ -50,8 +32,6 @@
             <input id="PostCode" type="text" class="textStandard" style="width: 100%">
 
         </div>
-
-
 
         <br>
         <br>
@@ -64,34 +44,11 @@
     <!-- Comments section-->
     <div style="margin-top: 150px">
         <h2>Comments</h2>
-
-        {% if request.user.is_authenticated %}
-            <div class="comment-form">
-                <form method="POST" action="">
-                    {% csrf_token %}
-                    <input type="hidden" name="comment" value="">
-                    <input type="text" name="body" placeholder="Write your message here...">
-
-                </form>
-            </div>
-        {% endif %}
+        {% include 'components/location/write_comment.html' %}
 
         <br>
 
-        {% for com in comment_list %}
-            <div>
-                {% if request.user == com.user %}
-                <a href="{% url 'deleteMessage' com.id %}">Delete</a>
-                {% endif %}
-
-                <small>{{com.user}} {{com.created|timesince}} ago</small>
-                <p>{{com.body}}</p>
-                <hr>
-
-            </div>
-
-        {% endfor %}
-
+        {% include 'components/user/comments.html' %}
 
 
     </div>

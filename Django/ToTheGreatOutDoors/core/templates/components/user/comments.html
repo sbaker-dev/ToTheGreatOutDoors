@@ -1,0 +1,13 @@
+{% for com in comment_list %}
+    <div>
+        {% if request.user == com.user %}
+            <a href="{% url 'deleteMessage' com.id %}">Delete</a>
+        {% endif %}
+
+        <small>{{com.user}} {{com.created|timesince}} ago</small>
+        <p>{{com.body}}</p>
+        <hr>
+
+    </div>
+
+{% endfor %}

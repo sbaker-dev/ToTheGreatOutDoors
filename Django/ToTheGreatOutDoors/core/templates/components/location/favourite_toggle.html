@@ -1,0 +1,15 @@
+{% if request.user.is_authenticated %}
+
+    <form method="POST" action="">
+        {% csrf_token %}
+        <input type="hidden" name="favourite" value="">
+
+        {% if favourite != True %}
+            <input type="submit" name="favourite" class="btn" value="Add to Favourites?">
+
+        {% else %}
+            <input type="submit" name="favourite" class="btn" value="In your Favourites!" style="background-color: #A298C4; color: white">
+        {% endif %}
+
+    </form>
+{% endif %}
