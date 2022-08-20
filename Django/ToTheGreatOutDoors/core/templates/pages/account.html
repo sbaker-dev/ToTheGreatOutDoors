@@ -1,0 +1,27 @@
+{% extends 'core/main.html' %}
+
+{% block content %}
+    <br>
+    <br>
+    <br>
+    <br>
+
+    <div style="padding: 50px">
+
+        <h1>{{ userDetails }}</h1>
+        <h3>{{ userDetails.email }}</h3>
+
+        <div style="display: grid; grid-template-columns: 50% 50%; margin-top: 50px">
+            <div>
+                <h2>Favourites</h2>
+                {% include 'components/user/fav_list.html' %}
+            </div>
+
+            <div>
+                <h2>Recent comments</h2>
+                {% include 'components/user/comments.html' %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

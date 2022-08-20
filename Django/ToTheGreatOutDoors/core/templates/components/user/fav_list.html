@@ -1,0 +1,7 @@
+{% for fav in favourites %}
+
+    <a class="btn" style="background-color: #A298C4; width: 80%; color: white" href="{% url 'place' fav.location.name fav.location.place %}">{{ fav.location.name}}</a>
+    <br>
+    <br>
+
+{% endfor %}

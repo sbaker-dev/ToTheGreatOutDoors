@@ -130,9 +130,6 @@ def place(request, place_name, place_location):
         else:
             print(f"Found unexpected POST command of {request.POST}")
 
-    print(len(fav_list))
-
-
     context = {'comment_list': comment_list, 'location': location, 'favourite': len(fav_list) == 1}
     return render(request, 'pages/place_details.html', context)
 
@@ -148,3 +145,12 @@ def delete_message(request, pk):
         # TODO: This should link to account page
         return redirect('home')
     return render(request, 'components/user/delete_comment.html', {'obj': message_to_delete})
+
+
+def account_page(request):
+
+    user_favourites = Favorite.objects.filter(user=request.user)
+    user_messages = Comment.objects.filter(user=request.user)
+
+    context = {'userDetails': request.user, 'favourites': user_favourites, 'comment_list': user_messages}
+    return render(request, 'pages/account.html', context)
