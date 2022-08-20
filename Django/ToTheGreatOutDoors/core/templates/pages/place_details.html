@@ -11,14 +11,13 @@
     <br>
     <br>
 
-<div style="display: grid; grid-template-rows: 100px 250px; padding: 50px">
+<div style="display: grid; grid-template-rows: 40% 60%; padding: 50px">
 
     <div style="display: grid; grid-template-columns: 70% 30%;">
 
         <div>
 
             {% include 'components/location/details.html' %}
-
 
             <br>
 
@@ -28,9 +27,9 @@
         </div>
 
         <div>
-            <label class="textStandard" for="PostCode">Get Directions from your post code</label>
-            <input id="PostCode" type="text" class="textStandard" style="width: 100%">
-
+            <label class="textStandard" for="PostCode">Get Directions from your UK post code</label>
+            <input id="PostCode" type="text" class="textStandard" autocomplete="off" data-map-x="{{ location.map_x }}" data-map-y="{{ location.map_y }}" style="width: 100%">
+            <button class="btn btn-primary" style="margin-top: 20px" onclick="GetDirections()">Get Directions</button>
         </div>
 
         <br>
@@ -56,6 +55,7 @@
 
 </div>
 
+    <script src="{% static 'js/directions.js' %}"></script>
 
 
 {% endblock %}
