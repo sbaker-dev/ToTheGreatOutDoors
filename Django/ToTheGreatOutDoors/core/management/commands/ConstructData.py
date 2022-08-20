@@ -7,6 +7,7 @@ from shapely.geometry import Polygon, MultiPolygon
 from shapeObject import ShapeObject
 from dataclasses import dataclass
 from abc import abstractmethod
+from pyproj import Transformer
 from pathlib import Path
 
 
@@ -18,6 +19,7 @@ class Location:
     gid: str
     purpose: str
     polygon: Union[Polygon, MultiPolygon]
+    crs: str
     external_link: Optional[str] = None
 
     def overlap(self, overlap_places: List[Location]) -> Optional[Location]:
@@ -30,9 +32,9 @@ class Location:
                 return location
         return None
 
-    def database_values(self, window_dimension: int, simplification: float):
+    def database_values(self, window_dimension: int, simplification: float, map_crs: str):
         """Convert to a dict for the json database"""
-        return self.purpose, self.external_link, self.as_svg(window_dimension, simplification)
+        return self.purpose, self.external_link, self.as_svg(window_dimension, simplification), self.centroid(map_crs)
 
     def as_svg(self, window_dimension: int, simplification: float):
         """Convert the svg points to be relative to the window dimension of the application"""
@@ -40,6 +42,15 @@ class Location:
         geometry_points = [[f"{x / window_dimension},{(y / window_dimension)} " for x, y in sub_geometry]
                            for i, sub_geometry in enumerate(set_polygon_geometry(polygon_points))]
         return "".join([f"M{p[0]}" + f"L{p[1]}" + f"{''.join(p[2:])}z" for p in geometry_points])
+
+    def centroid(self, external_crs: str):
+        """
+        External maps CRS may not match the input, for example google maps CRS is EPSG:4326. This coverts the centroid
+        of the polygon to a requested CRS so that it can be used for directions or other information.
+        """
+        transformer = Transformer.from_crs(self.crs, external_crs)
+        centroid = self.polygon.centroid
+        return transformer.transform(centroid.x, centroid.y)
 
     @property
     def place_name(self):
@@ -72,7 +83,7 @@ class NationalTrust(DatabaseLoader):
 
     def load_data(self, category: Optional[str] = None) -> Dict[str, Location]:
         # Extract the data from the shapefile
-        locations_dict = {name: Location(name, gid, category, poly)
+        locations_dict = {name: Location(name, gid, category, poly, 'epsg:27700')
                           for poly, (_, gid, name, _, _, _) in zip(self.shp.polygons, self.shp.records)}
 
         # Attempt to assign any links that are required if we find a match
@@ -99,7 +110,8 @@ class EnglishHeritage(DatabaseLoader):
         self.link_i = link_i
 
     def load_data(self, category: Optional[str] = None) -> Dict[str, Location]:
-        return {rec[self.name_i]: Location(rec[self.name_i], rec[self.gid_i], category, poly, rec[self.link_i])
+        return {rec[self.name_i]: Location(rec[self.name_i], rec[self.gid_i], category, poly, 'epsg:27700',
+                                           rec[self.link_i])
                 for poly, rec in zip(self.shp.polygons, self.shp.records) if "cemetery" not in rec[self.name_i].lower()}
 
 
@@ -112,7 +124,7 @@ class OSGreenSpace(DatabaseLoader):
         self.exceptions = os_exceptions
 
     def load_data(self, category: Optional[str] = None) -> Dict[str, Location]:
-        return {gid: Location(name, gid, purpose, poly) for poly, (gid, purpose, name, _, _, _) in
+        return {gid: Location(name, gid, purpose, poly, 'epsg:27700') for poly, (gid, purpose, name, _, _, _) in
                 zip(self.shp.polygons, self.shp.records) if purpose not in self.exceptions}
 
 
@@ -123,13 +135,13 @@ class OSBoundary(DatabaseLoader):
         super().__init__(env, shapefile_path)
 
     def load_data(self, category: Optional[str] = None):
-        return {name: Location(name, gid, category, poly)
+        return {name: Location(name, gid, category, poly, 'epsg:27700')
                 for poly, (name, _, _, _, _, _, _, gid, _, _, _, _, _, _, _) in zip(
                 self.shp.polygons, self.shp.records)}
 
 
 class ConstructData:
-    def __init__(self, env_path: Path, window_size: int, os_exceptions: List[str]):
+    def __init__(self, env_path: Path, os_exceptions: List[str]):
 
         # Initialise the paths from the env file
         self.env = load_yaml(validate_path(env_path))
@@ -137,7 +149,6 @@ class ConstructData:
         self.data = self.env['external_data']
 
         # Canvas size for the SVG elements
-        self.window_size = window_size
         self.factory = {'national': NationalTrust, "english": EnglishHeritage}
 
         # Load the OS data and construct the database

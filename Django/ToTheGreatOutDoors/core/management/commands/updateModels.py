@@ -17,8 +17,8 @@ class Command(BaseCommand):
 
         # Assignable args
         self.window_size = None
-        self.boundary_simplification = None
-        self.place_simplification = None
+        self.boundary_simplify = None
+        self.place_simplify = None
         self.place_relations = None
 
     help = 'import booms'
@@ -49,8 +49,8 @@ class Command(BaseCommand):
     def _initialise_arguments(self, kwargs: dict):
         """Initialise the arguments from the command line to __init__"""
         self.window_size = kwargs['window_size'][0]
-        self.boundary_simplification = kwargs['boundary_simplification'][0]
-        self.place_simplification = kwargs['place_simplification'][0]
+        self.boundary_simplify = kwargs['boundary_simplification'][0]
+        self.place_simplify = kwargs['place_simplification'][0]
 
         # Load the relational data for locations
         relations_db = load_json(self.env['output_data_root'] + "/RelationMap.txt")
@@ -60,32 +60,33 @@ class Command(BaseCommand):
         """Construct the {name: Location} database by loading each of the shapefiles entries as Location"""
         # TODO: Expose?
         exclusions = ['Religious Grounds', 'Allotments Or Community Growing Spaces', 'Cemetery']
-        return ConstructData(self.env_root, self.window_size, exclusions)
+        return ConstructData(self.env_root, exclusions)
 
     def _construct_boundaries(self, location_database: ConstructData):
         """Construct the Boundaries within the db.sqlite3 database"""
         print("Assigning boundary locations...")
-        boundary_list = [Boundary(place=place, svg=data.as_svg(self.window_size, self.boundary_simplification))
+        boundary_list = [Boundary(place=place, svg=data.as_svg(self.window_size, self.boundary_simplify))
                          for place, data in location_database.boundary.items()]
         Boundary.objects.bulk_create(boundary_list)
 
     def _construct_locations(self, location_db: ConstructData):
         """Assign each travel location to the database"""
         print("Assigning travel location...")
-        # TODO: For a selection of places (just assign in __init__ for now), do the older save root, so we can add
-        #   user data
-
-        location_database = [self._assign_locations(name, place)
-                             for database in location_db.location_data for name, place in database.items()]
+        location_database = [self._assign_locations(name, place, database_index, place_index)
+                             for database_index, database in enumerate(location_db.location_data)
+                             for place_index, (name, place) in enumerate(database.items())]
         location_database = [location for location in location_database if location]
         TravelLocation.objects.bulk_create(location_database)
 
-    def _assign_locations(self, name: str, place: Location):
+    def _assign_locations(self, name: str, place: Location, database_index: int, place_index: int):
         """Assign a location, if it can be placed within a relational map"""
+        if place_index % 100 == 0:
+            print(f"Assigned {place_index} locations from database {database_index}")
         try:
-            purpose, external_link, svg_data = place.database_values(self.window_size, self.place_simplification)
+            purpose, external_link, svg_data, (x, y), = \
+                place.database_values(self.window_size, self.place_simplify, 'epsg:4326')
             return TravelLocation(name=name, category=purpose, svg=svg_data, link=external_link,
-                                  place=self.place_relations[name])
+                                  place=self.place_relations[name], map_x=x, map_y=y)
         except KeyError:
             pass
 

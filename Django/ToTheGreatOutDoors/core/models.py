@@ -22,6 +22,8 @@ class TravelLocation(models.Model):
     svg = models.TextField()
     link = models.TextField(null=True)
     place = models.TextField()
+    map_x = models.FloatField()
+    map_y = models.FloatField()
 
     def __str__(self):
         return self.name

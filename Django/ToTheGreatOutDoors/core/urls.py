@@ -8,6 +8,7 @@ urlpatterns = [
     path('select_location/', views.select_location, name="select_location"),
     path('county/<str:pk>/<str:place_type>', views.county, name='county'),
     path('place/<str:place_name>/<str:place_location>/', views.place, name='place'),
+    path('search/', views.search_location, name="search_location"),
 
     # User authentication / interaction / account settings
     path('login/', views.login_page, name='login'),

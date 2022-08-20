@@ -157,3 +157,15 @@ def account_page(request):
 
     context = {'userDetails': request.user, 'favourites': user_favourites, 'comment_list': user_messages}
     return render(request, 'pages/account.html', context)
+
+
+def search_location(request):
+    context = {'matchLocation': [], 'searchStatus': 0, 'matchLength': 0, 'searchName': ""}
+    if request.method == 'POST':
+
+        context['matchLocation'] = TravelLocation.objects.filter(name__contains=request.POST.get('searchName'))
+        context['searchStatus'] = 1
+        context['matchLength'] = len(context['matchLocation'])
+        context['searchName'] = request.POST.get('searchName')
+
+    return render(request, 'pages/search_location.html', context)
