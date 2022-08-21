@@ -23,6 +23,10 @@
         <!-- Selection of activity -->
         {% include 'components/selection/activity_selection.html' %}
 
+        {% if state != '0' %}
+            <p style="color: darkred" class="textStandard">Sorry, no activity type found for current location</p>
+        {% endif %}
+
         <!-- Move to the county view with the current desired locations selected. Default URL is altered by javascript-->
         <a class="btn btn-primary" style="text-align: center; padding: 70px" href="{% url 'county' 'Buckinghamshire' 'National Trust' %}" id="LetsGo">Let's go!</a>
 

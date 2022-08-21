@@ -10,7 +10,7 @@ def home(request):
     return render(request, 'pages/home.html')
 
 
-def select_location(request):
+def select_location(request, state):
     """
     Isolate the unique categories names, and all the location, and raster maps to allow people to search for travel
     location within a given area
@@ -20,7 +20,7 @@ def select_location(request):
     categories = [cat['category'] for cat in categories]
 
     context = {"locations_list": Boundary.objects.all(), "categories_list": categories,
-               'raster_list': RasterMap.objects.all()}
+               'raster_list': RasterMap.objects.all(), 'state': state}
     return render(request, 'pages/select_location.html', context=context)
 
 
@@ -32,6 +32,9 @@ def county(request, pk, place_type):
         Q(category=place_type) &
         Q(place=pk)
     )
+
+    if len(travel_locations) == 0:
+        return redirect('select_location', "1")
 
     context = {"locations_list": Boundary.objects.filter(place=pk), 'raster_list': RasterMap.objects.all(),
                'travel_locations': travel_locations}
