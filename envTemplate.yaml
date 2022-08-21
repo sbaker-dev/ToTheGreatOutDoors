@@ -1,0 +1,31 @@
+# Yaml file template. If you are building from source, you will need to download the data and change the .. to the start
+# of the directory path
+
+
+# Paths for OS data
+os_data:
+  os_green: ../OS Open Greenspace (ESRI Shape File) GB/data
+  os_boundary: ../bdline_essh_gb/Data
+  os_raster: ../ras250_gb/data
+
+# The path and category listing of the external location data
+external_data:
+  national_trust_open:
+    link: ../National_Trust_Open_Data__Land_-_Always_Open/d00dbcdd-ca42-4b51-9889-50627184f7602020313-1-1rdxbnd.c0er.shp
+    category: National Trust
+  national_trust_limited:
+    link: ../National_Trust_Open_Data__Land_-_Limited_Access/9a97e056-3bd9-4817-a9c5-ad7de1f31a1d2020313-1-rlrdj0.1jac.shp
+    category: National Trust
+  english_heritage_monuments:
+    link: ../Scheduled Monuments/ScheduledMonuments_26July2022.shp
+    category: Monuments
+  english_heritage_battle:
+    link: ../Battlefields/Battlefields_20Aug2021.shp
+    category: Historic Battlefield
+  english_heritage_parks:
+    link: ../Parks and Gardens/ParksAndGardens_04Jan2022.shp
+    category: Public Park Or Garden
+
+# HTML root for national trust links
+nat_trust_links: ../
+output_data_root: ../PycharmProjects/ToTheGreatOutDoors/Data
