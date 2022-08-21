@@ -4,3 +4,5 @@
 /venv
 /Django/static/images
 /Django/static/coverImages/SearchLink.clip
+/Django/ToTheGreatOutDoors/core/tests.py
+/Django/ToTheGreatOutDoors/db.sqlite3
