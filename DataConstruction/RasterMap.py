@@ -19,7 +19,7 @@ class ReformatRaster:
         """Create a PNG of each tiff, and save the position data to a database"""
         [self.reformat_tiffs(file) for file in directory_iterator(self.root)]
 
-        write_json(self.raster_positions, self.env['output_data_root'], 'RasterPositions')
+        write_json(self.raster_positions, str(Path(Path(__file__).parent.parent, 'Data').absolute()), 'RasterPositions')
 
     def reformat_tiffs(self, file_name: str):
         """Convert the tiff into a png and store the coordinate data for django"""
