@@ -60,9 +60,11 @@ def place(request, place_name, place_location):
     if request.method == "POST":
         # New comment has been posted, update.
         if 'comment' in request.POST:
+            print("HERE?")
             Comment.objects.create(user=request.user,
                                    location=location,
-                                   body=request.POST.get('body'))
+                                   body=request.POST.get('body'),
+                                   comment_group=len(comment_list))
             return redirect('place', place_name=place_name, place_location=place_location)
 
         elif 'favourite' in request.POST:
@@ -79,10 +81,28 @@ def place(request, place_name, place_location):
                 Favorite.objects.create(user=request.user, location=location)
                 return redirect('place', place_name=place_name, place_location=place_location)
 
+        elif 'reply' in request.POST:
+            print(request.POST.get('body'))
+            print("Hello")
+            print(request.POST.get('id'))
+            original_comment = Comment.objects.get(id=request.POST.get('id'))
+
+            reply = Comment.objects.create(user=request.user, location=location, body=request.POST.get('body'),
+                                           comment_level=original_comment.comment_level + 1,
+                                           comment_group=original_comment.comment_group)
+
+
+            # Reply.objects.create(user=request.user, body=request.POST.get('body'))
+            return redirect('place', place_name=place_name, place_location=place_location)
+
         else:
             print(f"Found unexpected POST command of {request.POST}")
 
-    context = {'comment_list': comment_list, 'location': location, 'favourite': len(fav_list) == 1}
+    base_comments = [comment for comment in comment_list if comment.comment_level == 0]
+    replies = [comment for comment in comment_list if comment.comment_level > 0]
+
+
+    context = {'comment_list': base_comments, 'location': location, 'favourite': len(fav_list) == 1, 'replies': replies}
     return render(request, 'pages/place_details.html', context)
 
 

@@ -1,14 +1,86 @@
 <!-- Display each comment that exists within a list of comments -->
 
-{% for com in comment_list %}
-    <div>
-        {% if request.user == com.user %}
-            <a href="{% url 'deleteMessage' com.id %}">Delete</a>
-        {% endif %}
 
-        <small>{{com.user}} {{com.created|timesince}} ago</small>
-        <p>{{com.body}}</p>
+<!--TODO: Remake the comments page so that we have the comments on the right hand side, which scrolls, with the left
+ hand side of the page just containing the individual information, which does not scroll with the page-->
+
+{% for com in comment_list %}
+
+
+    <div>
+    {% if request.user == com.user %}
+        <a href="{% url 'deleteMessage' com.id %}">Delete</a>
+
+    {% endif %}
+
+
+
+    <small>{{com.user}} {{com.created|timesince}} ago</small>
+    <p>{{com.body}}</p>
+
+
+    <div class="comment-form">
+        <form method="POST" action="">
+            {% csrf_token %}
+            <input type="hidden" name="reply" value="">
+            <input type="hidden" name="id" value="{{ com.id }}">
+            <input type="text" name="body" placeholder="Reply?">
+
+        </form>
+    </div>
+
+    <!-- TODO: If com.reply_list|length > 0, then we want to call the recusive? -->
+
+    {% for reply in com.reply_list %}
+        <br>
+        <small style="padding-left: {{ reply.reply_indent }}px">{{reply.user}} {{reply.created|timesince}} ago</small>
+        <p style="padding-left: {{ reply.reply_indent }}px">{{reply.body}}</p>
+
+        <div class="comment-form">
+        <form method="POST" action="">
+            {% csrf_token %}
+            <input type="hidden" name="reply" value="">
+            <input type="hidden" name="id" value="{{ reply.id }}">
+            <input type="text" name="body" placeholder="Reply?">
+
+        </form>
+
+        <!-- TODO This is roughly the recusive pattern-->
+
+    </div>
+
+    {% endfor %}
+
+
         <hr>
+
+
+
+{#         {% for r in com.reply.all %}#}
+{##}
+{#            <p>{{ com.body }}</p>#}
+{##}
+{#        {% endfor %}#}
+{##}
+{#        {% if request.user == com.user %}#}
+{##}
+{#        <div class="comment-form">#}
+{#            <form method="POST" action="">#}
+{#                {% csrf_token %}#}
+{#                <input type="hidden" name="reply" value="">#}
+{#                <input type="text" name="body" placeholder="Reply?">#}
+{##}
+{#            </form>#}
+{#        </div>#}
+{##}
+{##}
+{##}
+{#        <hr>#}
+{##}
+{##}
+{#        {% endif %}#}
+
+
 
     </div>
 
