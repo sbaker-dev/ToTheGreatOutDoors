@@ -82,17 +82,14 @@ def place(request, place_name, place_location):
                 return redirect('place', place_name=place_name, place_location=place_location)
 
         elif 'reply' in request.POST:
-            print(request.POST.get('body'))
-            print("Hello")
-            print(request.POST.get('id'))
             original_comment = Comment.objects.get(id=request.POST.get('id'))
 
-            reply = Comment.objects.create(user=request.user, location=location, body=request.POST.get('body'),
-                                           comment_level=original_comment.comment_level + 1,
-                                           comment_group=original_comment.comment_group)
-
-
-            # Reply.objects.create(user=request.user, body=request.POST.get('body'))
+            Comment.objects.create(user=request.user,
+                                   location=original_comment.location,
+                                   body=request.POST.get('body'),
+                                   comment_level=original_comment.comment_level + 1,
+                                   comment_group=original_comment.comment_group,
+                                   parent=original_comment.id)
             return redirect('place', place_name=place_name, place_location=place_location)
 
         else:
@@ -100,7 +97,6 @@ def place(request, place_name, place_location):
 
     base_comments = [comment for comment in comment_list if comment.comment_level == 0]
     replies = [comment for comment in comment_list if comment.comment_level > 0]
-
 
     context = {'comment_list': base_comments, 'location': location, 'favourite': len(fav_list) == 1, 'replies': replies}
     return render(request, 'pages/place_details.html', context)
@@ -113,7 +109,6 @@ def search_location(request):
     """
     context = {'matchLocation': [], 'searchStatus': 0, 'matchLength': 0, 'searchName': ""}
     if request.method == 'POST':
-
         context['matchLocation'] = TravelLocation.objects.filter(name__contains=request.POST.get('searchName'))
         context['searchStatus'] = 1
         context['matchLength'] = len(context['matchLocation'])

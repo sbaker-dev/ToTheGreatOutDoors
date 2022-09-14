@@ -39,20 +39,23 @@ class Comment(models.Model):
     replies = models.ForeignKey('self', null=True, on_delete=models.CASCADE)
     comment_level = models.IntegerField(default=0)
     comment_group = models.IntegerField(default=0)
+    parent = models.IntegerField(default=-1)
 
     def __str__(self):
         return f"{self.id}: {self.user} -> {self.body[0:50]}"
 
     def reply_list(self):
-        # TODO: We may need to order replies specially??
-        print(Comment.objects.filter(Q(comment_level__gt=self.comment_level) & Q(comment_group=self.comment_group)))
-        return Comment.objects.filter(Q(comment_level=self.comment_level + 1) & Q(comment_group=self.comment_group))
+        return Comment.objects.filter(Q(comment_group=self.comment_group) &
+                                      Q(location=self.location) &
+                                      Q(comment_level=self.comment_level + 1) &
+                                      Q(parent=self.id)
+                                      )
 
     def reply_indent(self):
         return self.comment_level * 20
 
     class Meta:
-        ordering = ['-updated', '-created']
+        ordering = ['-updated', '-created', '-comment_group']
 
 
 class Favorite(models.Model):

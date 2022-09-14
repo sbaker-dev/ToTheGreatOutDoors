@@ -1,0 +1,37 @@
+{% for com in comment_list %}
+
+    <div style="padding-left: {{ com.reply_indent }}px">
+        <!-- Allow users that are logged in to delete their messages -->
+        {% if request.user == com.user %}
+            <a href="{% url 'deleteMessage' com.id %}">Delete</a>
+        {% endif %}
+
+        <!-- Note who the user is, when the comment was created, and the comment -->
+        <small>{{com.user}} {{com.created|timesince}} ago</small>
+        <p>{{com.body}}</p>
+
+        <!-- Allow the user to reply to this comment -->
+        <div class="comment-form">
+            <form method="POST" action="">
+                {% csrf_token %}
+                <input type="hidden" name="reply" value="">
+                <input type="hidden" name="id" value="{{ com.id }}">
+                <input type="text" name="body" placeholder="Reply?">
+
+            </form>
+        </div>
+
+    {% if com.reply_list|length > 0 %}
+
+        {% include "components/user/comment_reply.html" with comment_list=com.reply_list %}
+
+    {% endif %}
+
+    {% if com.comment_level == 0 %}
+        <hr>
+    {% endif %}
+
+
+    </div>
+
+{% endfor %}
