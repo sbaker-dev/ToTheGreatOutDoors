@@ -116,3 +116,29 @@
     margin-top: 5vh;
 
 }
+
+.loadProgress{
+    position: relative;
+    border-radius: 15px;
+
+    top: 40%;
+    left: 15%;
+    width: 70%;
+    background-color: #2D2E44;
+    z-index: 1;
+
+}
+
+
+.progressBar{
+    border-radius: 15px;
+    width: 15%;
+    height: 50px;
+    background-color: #A298C4;
+    z-index: 1;
+    text-align: center;
+    line-height:  50px;
+    color: white;
+    font-size: 20px;
+
+}
