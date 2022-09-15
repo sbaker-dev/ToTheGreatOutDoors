@@ -29,6 +29,12 @@ class TravelLocation(models.Model):
     def __str__(self):
         return self.name
 
+    def short_name(self):
+        """Allow for a shortened name for the account page"""
+        if len(self.name) > 50:
+            return self.name[0:50] + "..."
+        return self.name
+
 
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
