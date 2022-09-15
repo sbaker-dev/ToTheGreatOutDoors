@@ -1,8 +1,13 @@
 <!-- Display each favourite as a linkable button -->
-{% for fav in favourites %}
+<h2>Favourites</h2>
 
-    <a class="btn" style="background-color: #A298C4; width: 80%; color: white" href="{% url 'place' fav.location.name fav.location.place %}">{{ fav.location.name}}</a>
+<div style="height: 50%; width: 40%; position: fixed; overflow-y: auto; overflow-x: hidden;">
+
+    {% for fav in favourites %}
+
+    <a class="btn" style="background-color: #A298C4; width: 90%; color: white" href="{% url 'place' fav.location.name fav.location.place %}">{{ fav.location.short_name}}</a>
     <br>
     <br>
+    {% endfor %}
 
-{% endfor %}
+</div>
