@@ -32,7 +32,7 @@
         {% endif %}
 
         <!-- Move to the county view with the current desired locations selected. Default URL is altered by javascript-->
-        <a class="btn btn-primary" style="text-align: center; padding: 70px" href="{% url 'county' 'Buckinghamshire' 'National Trust' %}" id="LetsGo">Let's go!</a>
+        <a class="btn btn-primary" style="text-align: center; padding: 70px" href="{% url 'travel_location' locations_list.0.place categories_list.0 %}" id="LetsGo">Let's go!</a>
 
     </div>
 

@@ -25,7 +25,7 @@ def select_location(request, state):
 
 
 # TODO: Rename to travel location
-def county(request, pk, place_type):
+def travel_location(request, pk, place_type):
     """For a given boundary, find all the TravelLocations in that area that match that place type"""
     # Locations within this location of type 'place_type'
     travel_locations = TravelLocation.objects.filter(
