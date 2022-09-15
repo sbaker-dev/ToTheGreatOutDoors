@@ -19,7 +19,8 @@ function updateLoaded(){
     elem.innerHTML = loadedPercent;
 
     if (loaded === loadingCount){
-        console.log("Finish?")
+        let loadingScreen = document.getElementById('LoadingScreen')
+        loadingScreen.classList.add('fadeAway')
     }
 }
 

@@ -1,0 +1,13 @@
+<!--Set the loading count as the length of the raster_list, then update the load screen as we load the images. Fade the
+ loading screen away when finished-->
+{% load static %}
+
+<script src="{% static 'js/loading.js' %}"></script>
+
+<script>setLoadedCount({{ raster_list|length }})</script>
+
+<div id="LoadingScreen" class="loadScreen">
+    <div class="loadProgress" id="loadProgress">
+      <div class="progressBar" id="progressBar">1%</div>
+    </div>
+</div>
