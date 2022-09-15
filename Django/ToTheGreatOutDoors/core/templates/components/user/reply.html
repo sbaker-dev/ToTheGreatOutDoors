@@ -1,0 +1,14 @@
+
+<!-- Button that will become the reply section -->
+<button id="BT-{{ com.id }}" class="btn btn-primary" style="font-size: 10px;" onclick=showElement({{ com.id }})>Reply?</button>
+
+<!-- Allow the user to reply to this comment -->
+<div class="comment-form">
+    <form method="POST" action="">
+        {% csrf_token %}
+        <input type="hidden" name="reply" value="">
+        <input type="hidden" name="id" value="{{ com.id }}">
+        <input id="H-{{ com.id }}" class="hidden" type="text" name="body" placeholder="Reply?">
+
+    </form>
+</div>

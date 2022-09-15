@@ -1,3 +1,7 @@
+{% load static %}
+<script src="{% static 'js/hideShow.js' %}"></script>
+
+
 {% for com in comment_list %}
 
     <div style="padding-left: {{ com.reply_indent }}px">
@@ -10,27 +14,19 @@
         <small>{{com.user}} {{com.created|timesince}} ago</small>
         <p>{{com.body}}</p>
 
-        <!-- Allow the user to reply to this comment -->
-        <div class="comment-form">
-            <form method="POST" action="">
-                {% csrf_token %}
-                <input type="hidden" name="reply" value="">
-                <input type="hidden" name="id" value="{{ com.id }}">
-                <input type="text" name="body" placeholder="Reply?">
+        <!-- Allow individuals to reply to this comment-->
+        {% include "components/user/reply.html" %}
+        <br>
 
-            </form>
-        </div>
-
+    <!--Nested function, if we have replies, then re-run this template but with comment_list not equal to reply_list-->
     {% if com.reply_list|length > 0 %}
-
         {% include "components/user/comment_reply.html" with comment_list=com.reply_list %}
-
     {% endif %}
 
+    <!--If this is a level 0 comment, then add a horizontal break-->
     {% if com.comment_level == 0 %}
         <hr>
     {% endif %}
-
 
     </div>
 
