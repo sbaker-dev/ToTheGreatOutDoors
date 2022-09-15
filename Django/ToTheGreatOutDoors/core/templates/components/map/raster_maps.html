@@ -2,5 +2,5 @@
 {% load static %}
 
 {% for map in raster_list %}
-    <image x="{{ map.x }}" y="{{ map.y }}" width="{{ map.size }}" height="{{ map.size }}" id="{{ map.place }}" href='/static/images/{{ map.place }}.png' onload=updateLoaded()></image>
+    <image style="will-change: transform" x="{{ map.x }}" y="{{ map.y }}" width="{{ map.size }}" height="{{ map.size }}" id="{{ map.place }}" href='/static/images/{{ map.place }}.png' onload=updateLoaded() decoding="sync"></image>
 {% endfor %}
