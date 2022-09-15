@@ -5,25 +5,22 @@ page also allows the user to log out -->
 {% block content %}
     <br>
     <br>
-    <br>
-    <br>
 
-    <div style="padding: 50px">
+    <div style="padding: 20px">
 
-        <h1>{{ userDetails }}</h1>
-        <h3>{{ userDetails.email }}</h3>
-        <a href="{% url 'logout' %}">Logout</a>
+        <div class="leftContainer">
+            <h1>{{ userDetails }}</h1>
+            <h3>{{ userDetails.email }}</h3>
+            <a href="{% url 'logout' %}">Logout</a>
 
-        <div style="display: grid; grid-template-columns: 50% 50%; margin-top: 50px">
-            <div>
-                <h2>Favourites</h2>
-                {% include 'components/user/fav_list.html' %}
-            </div>
+            {% include 'components/user/fav_list.html' %}
 
-            <div>
-                <h2>Recent comments</h2>
-                {% include 'components/user/comments.html' %}
-            </div>
+        </div>
+
+        <!-- TODO:, maybe have a reply section, so that we can see people who have replied to you -->
+        <div class="rightContainer">
+            <h2>Recent comments</h2>
+            {% include 'components/user/comments.html' %}
         </div>
     </div>
 
