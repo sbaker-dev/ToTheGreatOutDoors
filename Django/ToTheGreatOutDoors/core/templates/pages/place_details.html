@@ -8,23 +8,21 @@
 
     <br>
     <br>
-    <br>
-    <br>
-
-<div style="display: grid; grid-template-rows: 40% 60%; padding: 50px">
-
-    <div style="display: grid; grid-template-columns: 70% 30%;">
-
-        <div>
-
-            {% include 'components/location/details.html' %}
-
-            <br>
-
-            {% include 'components/location/favourite_toggle.html' %}
 
 
-        </div>
+
+<div style="padding: 20px;">
+
+    <div class="leftContainer">
+
+        {% include 'components/location/details.html' %}
+
+        <br>
+
+        {% include 'components/location/favourite_toggle.html' %}
+
+        <br>
+
 
         <div>
             <label class="textStandard" for="PostCode">Get Directions from your UK post code</label>
@@ -32,16 +30,10 @@
             <button class="btn btn-primary" style="margin-top: 20px" onclick="GetDirections()">Get Directions</button>
         </div>
 
-        <br>
-        <br>
-        <br>
-        <br>
-
     </div>
 
-
     <!-- Comments section-->
-    <div style="margin-top: 150px">
+    <div class="rightContainer">
         <h2>Comments</h2>
         {% include 'components/location/write_comment.html' %}
 
@@ -51,7 +43,6 @@
 
 
     </div>
-
 
 </div>
 

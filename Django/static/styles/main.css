@@ -161,3 +161,19 @@
     transform: translateY(100%);
 
 }
+
+.hidden{
+    display: none;
+}
+
+
+.leftContainer{
+    height: 100%;
+    width: 40%;
+    position: fixed;
+    z-index: 1;
+}
+
+.rightContainer{
+    margin-left: 45%;
+}
