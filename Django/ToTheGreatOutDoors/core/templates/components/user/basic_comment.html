@@ -1,13 +1,6 @@
-<!-- Display each comment that exists within a list of comments -->
+<!-- Display each comment that exists within a list of comments without nesting -->
 
-
-<!--TODO: Remake the comments page so that we have the comments on the right hand side, which scrolls, with the left
- hand side of the page just containing the individual information, which does not scroll with the page-->
-
-{% for com in comment_list %}
-
-
-    <div>
+<div>
 
     {% if request.user == com.user %}
         <a href="{% url 'deleteMessage' com.id %}">Delete</a>
@@ -16,13 +9,6 @@
     <small>{{com.user}} {{com.created|timesince}} ago</small>
     <p>{{com.body}}</p>
 
-    <a class="btn" style="background-color: #A298C4; width: 45%; color: white" href="{% url 'place' com.location.name com.location.place %}">In {{ com.location.short_name}}</a>
-
+    <a class="btn" style="background-color: #A298C4; width: 90%; color: white" href="{% url 'place' com.location.name com.location.place %}">In {{ com.location.short_name}}</a>
     <hr>
-
-    </div>
-
-
-{% endfor %}
-
-
+</div>
