@@ -1,4 +1,4 @@
-
+<!--Hide and show elements for reply button-->
 
 function hideElement(elementID){
     let element = document.getElementById("BT-" + elementID)
