@@ -4,11 +4,15 @@ from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_protect
+
 from django.http import HttpResponse
+from django.db.models import Q
 
 from ..models import Comment, Favorite
 
 
+@csrf_protect
 def login_page(request):
     """Login page"""
     page = 'login'
@@ -17,14 +21,8 @@ def login_page(request):
         return redirect('home')
 
     if request.method == 'POST':
-        username = request.POST.get('username').lower()
+        username = request.POST.get('username')
         password = request.POST.get('password')
-
-        try:
-            user = User.objects.get(username=username)
-        except:
-            messages.error(request, "User does not exist")
-
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
@@ -32,6 +30,7 @@ def login_page(request):
             return redirect('home')
         else:
             messages.error(request, "Username OR password is invalid")
+            return redirect('login')
 
     context = {'page': page}
     return render(request, 'pages/login.html', context)
@@ -50,7 +49,7 @@ def register_user(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            # Save the user information temporarly so we can edit the stuff the user submits
+            # Save the user information temporarily so we can edit the stuff the user submits
             user = form.save(commit=False)
             user.username = user.username.lower()
             user.save()
@@ -82,5 +81,11 @@ def account_page(request):
     """The account page contains all the favourites and messages that user made"""
     user_favourites = Favorite.objects.filter(user=request.user)
     user_messages = Comment.objects.filter(user=request.user)
+    reply_messages = Comment.objects.filter(Q(comment_level__gt=0) & ~Q(user=request.user))
+
+
+
+    print(reply_messages)
+
     context = {'userDetails': request.user, 'favourites': user_favourites, 'comment_list': user_messages}
     return render(request, 'pages/account.html', context)
