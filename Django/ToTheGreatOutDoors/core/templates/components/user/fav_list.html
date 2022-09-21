@@ -5,7 +5,7 @@
 
     {% for fav in favourites %}
 
-    <a class="btn" style="background-color: #A298C4; width: 90%; color: white" href="{% url 'place' fav.location.name fav.location.place %}">{{ fav.location.short_name}}</a>
+    <a class="btn" style="background-color: #A298C4; width: 90%; color: white" href="{% url 'place' fav.location.raw_name fav.location.place %}">{{ fav.location.short_name}}</a>
     <br>
     <br>
     {% endfor %}

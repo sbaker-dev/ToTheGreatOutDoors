@@ -9,6 +9,6 @@
     <small>{{com.user}} {{com.created|timesince}} ago</small>
     <p>{{com.body}}</p>
 
-    <a class="btn" style="background-color: #A298C4; width: 90%; color: white" href="{% url 'place' com.location.name com.location.place %}">In {{ com.location.short_name}}</a>
+    <a class="btn" style="background-color: #A298C4; width: 90%; color: white" href="{% url 'place' com.location.raw_name com.location.place %}">In {{ com.location.short_name}}</a>
     <hr>
 </div>
