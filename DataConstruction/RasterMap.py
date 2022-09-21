@@ -39,7 +39,7 @@ class ReformatRaster:
         img.flip_vertical()
         img.resize(self.image_scale)
         img.write_to_file(Path(Path(__file__).parent.parent, 'Django', 'static', 'images'), Path(file_name).stem,
-                          'png', self.image_compression)
+                          'webp', self.image_compression)
 
     def extract_meta_data(self, file_name: str):
         """Isolate the meta data, specifically the starting map location, as we need that to place the map"""
@@ -63,4 +63,4 @@ class ReformatRaster:
 
 
 if __name__ == '__main__':
-    ReformatRaster(Path(Path(__file__).parent.parent, "env.yaml"), 2000, 0.4, 9)()
+    ReformatRaster(Path(Path(__file__).parent.parent, "env.yaml"), 2000, 0.4, 20)()

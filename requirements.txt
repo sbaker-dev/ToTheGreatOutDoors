@@ -6,7 +6,7 @@ cycler==0.11.0
 Django==3.2.15
 ExifRead==3.0.0
 fonttools==4.34.4
-imageObjects==0.13.5
+imageObjects==0.13.6
 kiwisolver==1.4.4
 matplotlib==3.5.3
 miscSupports==0.10.4
