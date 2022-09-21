@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
 
+import re
+
 # Create your models here.
 
 
@@ -34,6 +36,9 @@ class TravelLocation(models.Model):
         if len(self.name) > 50:
             return self.name[0:50] + "..."
         return self.name
+
+    def raw_name(self):
+        return re.sub('[^A-Za-z0-9 ]+', '', self.name)
 
 
 class Comment(models.Model):

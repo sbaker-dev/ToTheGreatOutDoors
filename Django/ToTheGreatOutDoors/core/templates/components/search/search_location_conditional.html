@@ -17,8 +17,7 @@ Finally, if we do find something, we display a link for each location -->
         <h3>Found the following locations containing <strong style="color: #A298C4">{{ searchName }}</strong> </h3>
 
         {% for match in matchLocation %}
-
-            <a class="btn" style="background-color: #A298C4; width: 100%; color: white;" href="{% url 'place' match.name match.place %}">{{ match.name}}</a>
+            <a class="btn" style="background-color: #A298C4; width: 100%; color: white;" href="{% url 'place' match.raw_name match.place %}">{{ match.name}}</a>
             <hr>
 
         {% endfor %}
