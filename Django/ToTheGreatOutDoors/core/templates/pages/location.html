@@ -6,6 +6,8 @@
 
 {% load static %}
 
+{% include 'components/map/loading_screen.html' %}
+
 
 <div style="display: grid; grid-template-columns: 30% 70%">
 
@@ -20,7 +22,7 @@
             {% include 'components/selection/place_selection.html' %}
         </div>
 
-        <a class="btn btn-primary" style="text-align: center; padding: 70px" href="{% url 'place' travel_locations.0.name locations_list.0.place %}" id="LetsGo">Let's go!</a>
+        <a class="btn btn-primary" style="text-align: center; padding: 70px" href="{% url 'place' travel_locations.0.raw_name locations_list.0.place %}" id="LetsGo">Let's go!</a>
 
 
     </div>

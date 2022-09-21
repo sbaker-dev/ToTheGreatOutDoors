@@ -1,5 +1,5 @@
 <!--Vector of a map travel location to vist-->
 
 {% for destination in travel_locations %}
-    <path onclick=LocationViaMap(id)  d="{{destination.svg}}" id="{{ destination.name }}" data-link="{{ destination.link }}"  style="fill: #2D2E44;"></path>
+    <path onclick='LocationViaMap("{{ destination.raw_name }}")'  d="{{destination.svg}}" id="{{ destination.raw_name }}" style="fill: #2D2E44;"></path>
 {% endfor %}

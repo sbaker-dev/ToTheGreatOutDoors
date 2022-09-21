@@ -5,7 +5,7 @@
     <select class="form-control form-control-lg" onchange="LocationViaSelect()" id="SelectionBox">
 
         {% for destination in travel_locations %}
-            <option value="{{destination.name}}">{{destination.name}}</option>
+            <option value="{{destination.raw_name}}">{{destination.name}}</option>
         {% endfor %}
 
     </select>

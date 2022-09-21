@@ -25,8 +25,6 @@ function ChangeOnSelectionSelect(selectionColour, defaultColour){
  */
 function ChangeOnPolygonSelect(place_id, selectionColour, defaultColour){
 
-    console.log(document.getElementById(selectionID))
-
     // Set the old value to be default
     const selectionBox = document.getElementById(selectionID);
     document.getElementById(selectionBox.value).style.fill = defaultColour;
@@ -109,14 +107,12 @@ function ChangeLocationHref(override_index, replacement_value){
 /**
  * Select a given location via the polygon map and add its name to the link button
  */
-function LocationViaMap(place_id){
-
+function LocationViaMap(raw_name){
     // Change the selected polygon via the map, and update the selection box
-    ChangeOnPolygonSelect(place_id, "lightblue",'#2D2E44');
-
+    ChangeOnPolygonSelect(raw_name, "lightblue",'#2D2E44');
 
     // Assign this to the href button, slicing off the BD- ID linker
-    ChangeLocationHref(1, place_id)
+    ChangeLocationHref(1, raw_name)
 }
 
 /**
