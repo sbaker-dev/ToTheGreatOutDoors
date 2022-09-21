@@ -3,11 +3,6 @@ page also allows the user to log out -->
 {% extends 'core/main.html' %}
 
 {% block content %}
-    <br>
-
-    <br>
-
-
 
     <div style="padding: 20px; display: grid; grid-template-columns: 50% 25% 25%">
 
@@ -30,60 +25,5 @@ page also allows the user to log out -->
         </div>
 
     </div>
-
-
-
-
-{##}
-{#    <div style="padding: 20px; grid-template-columns: 40% 30% 30%">#}
-{##}
-{#        <div>#}
-{#            <h1>{{ userDetails }}</h1>#}
-{#            <h3>{{ userDetails.email }}</h3>#}
-{#            <a href="{% url 'logout' %}">Logout</a>#}
-{##}
-{#            {% include 'components/user/fav_list.html' %}#}
-{#        </div>#}
-{##}
-{##}
-{#        <div class="leftContainer">#}
-{#            <h1>{{ userDetails }}</h1>#}
-{#            <h3>{{ userDetails.email }}</h3>#}
-{#            <a href="{% url 'logout' %}">Logout</a>#}
-{##}
-{#            {% include 'components/user/fav_list.html' %}#}
-{##}
-{#        </div>#}
-{##}
-{##}
-{#            <div>#}
-{#                <h2>Recent Replies</h2>#}
-{#                {% include 'components/user/account_replies.html' %}#}
-{##}
-{#            </div>#}
-{##}
-{#            <div>#}
-{#                <h2>Recent Replies</h2>#}
-{#                {% include 'components/user/account_replies.html' %}#}
-{#            </div>#}
-{#        #}
-{#            <div>#}
-{#                <h2>Recent Replies</h2>#}
-{#                {% include 'components/user/account_replies.html' %}#}
-{#            </div>#}
-{##}
-{##}
-{#        <!-- TODO:, maybe have a reply section, so that we can see people who have replied to you -->#}
-{#        <div class="rightContainer">#}
-{#            <h2>Recent comments</h2>#}
-{#            {% include 'components/user/account_comments.html' %}#}
-{#        </div>#}
-{##}
-{#        <div class="rightContainer">#}
-{##}
-{#        </div>#}
-{##}
-{##}
-{#    </div>#}
 
 {% endblock %}
