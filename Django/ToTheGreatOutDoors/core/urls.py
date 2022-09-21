@@ -7,7 +7,7 @@ urlpatterns = [
     path('', views.home, name="home"),
     path('select_location/<str:state>/', views.select_location, name="select_location"),
     path('county/<str:pk>/<str:place_type>', views.travel_location, name='travel_location'),
-    path('place/<str:place_name>/<str:place_location>/', views.place, name='place'),
+    path('place/<str:place_name>/<str:place_location>/', views.Place.as_view(), name='place'),
     path('search/', views.search_location, name="search_location"),
     path('contact', views.contact, name='contact'),
 
