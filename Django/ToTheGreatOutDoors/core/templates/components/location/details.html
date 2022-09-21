@@ -1,6 +1,7 @@
 <!-- The locations core details. If there is no external link, then do not make a tag linkable -->
 <h1 style="font-size: 50px; color: #A298C4">{{ location.name }}</h1>
 <p class="textStandard">{{ location.place }}</p>
+<p class="textStandard">Type: {{ location.category }}</p>
 {% if location.link != None %}
     <a class="textStandard" href="{{ location.link }}" target="_blank" >External information here</a>
 {% endif %}
