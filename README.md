@@ -23,9 +23,9 @@ Core design principle is to have the marginal cost of operation to be as low as 
 2) No premium services are used, such as ESRI for displaying maps as an example.
 3) No cost requirements for experimenting with the prototype.
 
-The app is designed as Django app, which means it's back end is in python with some front end web (HTML, CSS, Javascript) mixed in as well. Therefore, should you wish to use it, it should be possible to iterate and then deploy to any sever that supports Django as a framework. **However**, this project is only a proof of concept, and is therefore in DEBUG mode. Should you want to deploy it, make sure you do so safely. 
+The app is designed as Django app, which means it's back end is in python with front end web (HTML, CSS, Javascript) mixed in as well. Therefore, should you wish to use it, it should be possible to iterate and then deploy to any sever that supports Django as a framework. **However**, this project is only a proof of concept, and is therefore in DEBUG mode. Should you want to deploy it, make sure you do so safely. 
 
-**Warning** Whilst it is  possible to run with different browsers, there has only been enough time to validate chrome. As the CSS controls include webkit, if you do not use chrome, many features may not work correctly. 
+**Warning** There has only been enough time to validate chrome. As the CSS controls include webkit, if you do not use chrome, many features **will** not work correctly. 
 
 ## Installation and Use
 
@@ -46,7 +46,7 @@ You can also download the cached national trust html link files [here][DropboxNa
 [OSTerrian]: https://osdatahub.os.uk/downloads/open/Terrain50
 [NatTrust]: https://open-data-national-trust.hub.arcgis.com/
 [EngHeritage]: https://historicengland.org.uk/listing/the-list/data-downloads/
-[YoutubeVid]: https://youtu.be/okuzQdlP30Y
+[YoutubeVid]: https://youtu.be/XnjFhzfCdsE
 [NatTrustLinks]: https://en.wikipedia.org/wiki/List_of_National_Trust_properties_in_England
 [DropboxNatTrustHtml]: https://www.dropbox.com/scl/fo/smtc5sza89ulym7n6gtic/h?dl=0&rlkey=l8v33vgbqww05smj6dizly0a6
-[dropboxLink]:https://www.dropbox.com/s/zz6q2it6zpvgxka/db.sqlite3?dl=0
+[dropboxLink]:https://www.dropbox.com/s/cvjxmpj88xzhdru/db.sqlite3?dl=0
